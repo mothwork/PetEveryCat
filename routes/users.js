@@ -14,7 +14,51 @@ router.get('/', function (req, res, next) {
 router.get('/sign-up', csrfProtection, asyncHandler(async (req, res) => {
   const user = await User.build() // Does this need an await?
   res.render('sign-up', {Title: 'Sign Up', user, csrfToken: req.csrfToken()})
-}))
+}));
+
+const signupValidators = [
+  check('firstName')
+    .exists({checkFalsy: true})
+    .withMessage('Please provide a value for First Name')
+    .isLength({max: 50})
+    .withMessage('First Name must not be longer than 50 characters'),
+  check('lastName')
+    .exists({checkFalsy: true})
+    .withMessage('Please provide a value for Last Name')
+    .isLength({max: 50})
+    .withMessage('Last Name must not be longer than 50 characters'),
+  check('username')
+    .exists({checkFalsy: true})
+    .withMessage('Please provide a value for Username')
+    .isLength({max: 50})
+    .withMessage('Username must not be longer than 50 characters')
+    .custom((value) => {
+      return User.findOne({ where: { username: value }})
+        .then(user => {
+          if (user) {
+            return Promise.reject('The provided username is already in use');
+          }
+        });
+    }),
+  check('password')
+    .exists({checkFalsy: true})
+    .withMessage('Please provide a value for Password')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'g')
+    .withMessage('Password must contain at least 1 lowercase letter, uppercase letter, number, and special character (i.e. "!@#$%^&*")'),
+  check('confirmPassword')
+    .exists({checkFalsy: true})
+    .withMessage('Please provide a value for Confirm Password')
+    .custom((value, { req }) => {
+      if (value !== req.body.password && req.body.password) {
+        throw new Error('Password and Confirm Password do not match')
+      } else {
+        return true;
+      };
+    }),
+  check('bio')
+    .exists({ checkFalsy: true})
+    .withMessage('You MUST provide a bio')
+];
 
 
 module.exports = router;
