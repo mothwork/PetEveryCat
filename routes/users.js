@@ -60,5 +60,25 @@ const signupValidators = [
     .withMessage('You MUST provide a bio')
 ];
 
+router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async(req, res) => {
+  const { firstName, lastName, username, password, bio } = req.body;
+
+  const user = await User.build( {
+    firstName, lastName, username, bio
+  });
+
+  const validatorErrors = validationResult(req);
+
+  if(validatorErrors.isEmpty()) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.hashedPassword = hashedPassword;
+    await user.save()
+    // TO DO: log in user
+    res.redirect('/');
+    return
+  }
+  const errors = validatorErrors.array().map(e => e.msg);
+  res.render('sign-up', {title: 'Sign-Up', user, csrfToken: req.csrfToken(), errors});
+}))
 
 module.exports = router;
