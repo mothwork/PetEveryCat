@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { csrfProtection, asyncHandler } = require('../utils')
 const bcrypt = require('bcryptjs')
-const { check, validationResult } = require('express-validators')
+const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
 const { User } = db
 
@@ -78,7 +78,7 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async(req
     return
   }
   const errors = validatorErrors.array().map(e => e.msg);
-  res.render('sign-up', {title: 'Sign-Up', user, csrfToken: req.csrfToken(), errors});
+  res.render('sign-up', {title: 'Sign Up', user, csrfToken: req.csrfToken(), errors});
 }))
 
 module.exports = router;
