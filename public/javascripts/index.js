@@ -15,7 +15,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
             const res = await fetch(`/cats/${catId}`, {
                 method: 'DELETE'
             })
-            //const data = await res.json()
+            const data = await res.json()
+            if (data.message = 'successful') {
+                const container = document.querySelector(`.cat-${catId}`)
+                container.remove()
+            }
         })
 
     }

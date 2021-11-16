@@ -104,6 +104,10 @@ router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, async
     }
 }))
 
-
+router.delete('/:id(\\d+)', async(req, res) => {
+    const cat = await Cat.findByPk(req.params.id)
+    await cat.destroy()
+    res.json({message: 'successful'})
+})
 
 module.exports = router

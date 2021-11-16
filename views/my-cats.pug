@@ -16,11 +16,12 @@ block content
                 th
         tbody
             each cat in cats
-                tr
-                    //- td= img(src=`${cat.imgUrl}`, alt="")
-                    td= cat.name
-                    td= cat.dateCreated
-                    td= cat.dataUpdated
-                    td
-                        a(href=`/cats/edit/${cat.id}` role='button') Edit
-                        button(class="delete" id=cat.id) Delete
+                div(class=`cat-${cat.id}`)
+                    tr
+                        //- td= img(src=`${cat.imgUrl}`, alt="")
+                        td= cat.name
+                        td= cat.dateCreated
+                        td= cat.dataUpdated
+                        td
+                            a(href=`/cats/edit/${cat.id}` role='button') Edit
+                            button(class="delete" id=cat.id) Delete
