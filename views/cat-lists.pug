@@ -4,3 +4,7 @@ block content
     each catList in catLists
       div
         a(href=`/catLists/${catList.id}`)= catList.name
+        each cat in catList.Cats
+          div 
+          a(href=`/cats/${cat.id}`)= cat.name
+          //- img(src= cat.imgUrl)

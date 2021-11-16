@@ -1,0 +1,26 @@
+extends layout.pug 
+
+block content 
+    table 
+      thead 
+        tr 
+          th Name 
+          th Picture 
+          th Average Rating
+          th My Rating 
+          th Review
+      tbody 
+        each cat in catList.Cats
+          tr 
+            td
+              a(href=`/cats/${cat.id}`)= cat.name
+            td
+              //- img(src= cat.imgUrl)
+            td 
+              
+            td
+
+            td
+              each review in cat.Reviews
+                p Review: #{review.content}
+          
