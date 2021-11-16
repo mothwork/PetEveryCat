@@ -3,17 +3,17 @@ include utils.pug
 
 block content
     +validationErrorSummary(errors)
-    form(action='/cats/new' method='post')
+    form(action=`/cats/edit/${cat.id}` method='post')
         -// don't know if userId works
         input(type='hidden' name='userId' value=userId)
         input(type='hidden' name='_csrf' value=csrfToken)
-        +field('Cat Name', 'name', null)
-        +field('Breed', 'breed', null)
-        +field('Coat', 'coat', null)
-        +field('Size', 'size', null)
+        +field('Cat Name', 'name', cat.name)
+        +field('Breed', 'breed', cat.breed)
+        +field('Coat', 'coat', cat.coat)
+        +field('Size', 'size', cat.size)
         label(for='friendly') Is friendly?
         select(name='friendly')
             option(value='true') True
             option(value='false') False
-        +field('Image', 'imgUrl')
-        button Create New Cat
+        +field('Image', 'imgUrl', cat.imgUrl)
+        button Update Cat

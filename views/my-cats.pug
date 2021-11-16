@@ -17,4 +17,7 @@ block content
                     //- td= img(src=`${cat.imgUrl}`, alt="")
                     td= cat.name
                     td= cat.dateCreated
-                    
+                    td= cat.dataUpdated
+                    td
+                        a(href=`/cats/edit/${cat.id}` role='button') Edit
+                        a(href=`/cats/delete/${cat.id}` role='button') Delete
