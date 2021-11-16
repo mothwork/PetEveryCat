@@ -1,5 +1,8 @@
 extends layout
-
+append head
+  //- add page specific styles by appending to the head
+  link(rel="stylesheet" href="/stylesheets/index.css")
+  script(src="/javascripts/index.js" type="module" defer)
 block content
     h1 My Cats
     table
@@ -20,4 +23,4 @@ block content
                     td= cat.dataUpdated
                     td
                         a(href=`/cats/edit/${cat.id}` role='button') Edit
-                        a(href=`/cats/delete/${cat.id}` role='button') Delete
+                        button(class="delete" id=cat.id) Delete
