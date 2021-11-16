@@ -32,8 +32,26 @@ router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
     }
 }));
 
-router.post('/:id(\\d+)/delete', asyncHandler(async(req, res, next) => {
-    console.log("hey")
-}))
+router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
+  const id = req.params.id;
+  const catList = await CatList.findByPk(id);
+  if (catList) {
+    await catList.destroy();
+    res.status = 204;
+    return res.end();
+  } else {
+    return next(catListNotFound(req.params.id));
+  }
+}));
+
+router.post('/', asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  const userId = req.session.auth.userId;
+
+  if (name) {
+    const newCatList = await CatList.create({ name, userId });
+    res.json(newCatList);
+  }
+}));
 
 module.exports = router
