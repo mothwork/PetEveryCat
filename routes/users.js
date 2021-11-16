@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
 const { User } = db
+const { loginUser, } = require('../auth');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -74,6 +75,7 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
     user.hashedPassword = hashedPassword;
     await user.save()
     // TO DO: log in user
+    loginUser(req, res, user);
     res.redirect('/');
     return
   }
@@ -110,6 +112,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
       if (isPassword){
         //TODO Log user in
+        loginUser(req, res, user);
         return res.redirect('/')
       }
     }

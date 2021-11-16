@@ -1,0 +1,13 @@
+extends layout.pug 
+
+include utils.pug
+
+block content
+  +validationErrorSummary(errors)
+  form(action="/users/log-in" method="post")
+    input(type="hidden", name="_csrf" value=csrfToken)
+    +field("Username", "username", username)
+    +field("Password", "password", null, "password")
+    button(type="submit") Log-In
+  div
+    a(href="/users/sign-up") Don't have an account? Sign up!
