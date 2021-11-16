@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    h1 My Cats
+    table
+        thead
+            tr
+                th
+                th Cat Name
+                th Date Created
+                th Date Edited
+                th
+                th
+        tbody
+            each cat in cats
+                tr
+                    td= img(src=`${cat.imgUrl}`, alt="")
