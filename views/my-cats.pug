@@ -14,4 +14,7 @@ block content
         tbody
             each cat in cats
                 tr
-                    td= img(src=`${cat.imgUrl}`, alt="")
+                    //- td= img(src=`${cat.imgUrl}`, alt="")
+                    td= cat.name
+                    td= cat.dateCreated
+                    

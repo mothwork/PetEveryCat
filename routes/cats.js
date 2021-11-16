@@ -1,24 +1,32 @@
 const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { Cat } = db
+const { Cat, User } = db
 const { restoreUser } = require("../auth")
 const { check, validationResult } = require('express-validator')
 
 const router = express.Router()
 
 router.get('/', restoreUser, asyncHandler(async (req, res) => {
-    const cats = await Cat.findAll()
-    res.render('cats', { Title: 'Cats', cats })
+    try {
+        const cats = await Cat.findAll()
+        res.render('cats', { Title: 'Cats', cats })
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+
 }))
 
 router.get('/:id(\\d+)', restoreUser, asyncHandler(async (req, res) => {
-    const catId = req.params.id
-    const cat = await Cat.findByPk(catId, {include: {User}})
+    const id = req.params.id
+    const cat = await Cat.findOne({where: {id}}, {include: {User}})
+    //TODO add user link
     //TODO add reviews
     res.render("cat-info", {Title: `${cat.name}`, cat}) //Does this work?
 }))
 
+//Does not work due to sessionID error
 router.get('/new', csrfProtection, restoreUser, asyncHandler(async(req, res) => {
     const { userId } = req.session.auth
     const cat = cat.build();
@@ -48,3 +56,5 @@ router.post('/new', csrfProtection, restoreUser, catValidators, asyncHandler(asy
 
     }
 }))
+
+module.exports = router
