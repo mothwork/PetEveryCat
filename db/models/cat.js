@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER,
       },
-    imgUrl: DataTypes.STRING
+    imgUrl: DataTypes.TEXT
   }, {});
   Cat.associate = function(models) {
     // associations can be defined here
