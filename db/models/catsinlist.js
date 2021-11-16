@@ -1,8 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const CatsInList = sequelize.define('CatsInList', {
-    catId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
+    catId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    catListId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    }
   }, {});
   CatsInList.associate = function(models) {
     // associations can be defined here

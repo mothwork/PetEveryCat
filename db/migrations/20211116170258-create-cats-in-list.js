@@ -15,11 +15,11 @@ module.exports = {
           model: 'Cats'
         }
       },
-      userId: {
+      catListId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users'
+          model: 'CatLists'
         }
       },
       createdAt: {
