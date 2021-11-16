@@ -1,5 +1,6 @@
-//- extends layout.pug 
+extends layout.pug 
 
-//- block content 
-//-     each catList in catLists 
-//-         a(href=`/catLists/${catList.id}`)= catList.name
+block content 
+    each catList in catLists
+      div
+        a(href=`/catLists/${catList.id}`)= catList.name
