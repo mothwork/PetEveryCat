@@ -22,14 +22,14 @@ router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
         model: Cat,
         include: Review
     } } );
-    console.log(catList.Cats);
 
+    // Question: Do we want to include average reviews in the list?
     if (!catList || catList.userId !== req.session.auth.userId) {
         return next(catListNotFound(req.params.id));
     }
     else {
-        res.render('cat-list', { title: catList.name, catList })
+        res.render('cat-list', { title: catList.name, catList, userId: req.session.auth.userId })
     }
-}))
+}));
 
 module.exports = router

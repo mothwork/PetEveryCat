@@ -18,9 +18,12 @@ block content
               //- img(src= cat.imgUrl)
             td 
               
-            td
+            each review in cat.Reviews
+              td
+                if review.userId === userId
+                  p= review.rating
 
-            td
-              each review in cat.Reviews
-                p Review: #{review.content}
+              td
+                if review.userId === userId
+                  p Review: #{review.content}
           

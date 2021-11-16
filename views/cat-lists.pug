@@ -7,4 +7,10 @@ block content
         each cat in catList.Cats
           div 
           a(href=`/cats/${cat.id}`)= cat.name
+        a(href=`/catlists/${catList.id}/edit`)
+          button Edit Cat List
+        a(href=`/catlists/${catList.id}/delete`)
+          button Delete Cat List
           //- img(src= cat.imgUrl)
+    a(href="/catlists/new")
+      button Create New Cat List
