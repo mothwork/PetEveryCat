@@ -32,4 +32,8 @@ router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
     }
 }));
 
+router.post('/:id(\\d+)/delete', asyncHandler(async(req, res, next) => {
+    console.log("hey")
+}))
+
 module.exports = router

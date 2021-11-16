@@ -1,16 +1,17 @@
 extends layout.pug 
 
 block content 
+    script(src="/javascripts/catlists.js" type="module")
     each catList in catLists
-      div
+      div(id=`${catList.id}-catlist`)
         a(href=`/catLists/${catList.id}`)= catList.name
         each cat in catList.Cats
           div 
           a(href=`/cats/${cat.id}`)= cat.name
-        a(href=`/catlists/${catList.id}/edit`)
-          button Edit Cat List
-        a(href=`/catlists/${catList.id}/delete`)
-          button Delete Cat List
+        //- a(href=`/catlists/${catList.id}/edit`)
+        button(id=`${catList.id}-edit` class="edit") Edit Cat List
+        //- a(href=`/catlists/${catList.id}/delete`)
+        button(id=`${catList.id}-delete` class="delete") Delete Cat List
           //- img(src= cat.imgUrl)
     a(href="/catlists/new")
-      button Create New Cat List
+      button(id=`new` class="new") Create New Cat List
