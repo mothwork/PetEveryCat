@@ -14,15 +14,15 @@ const restoreUser = async (req, res, next) => {
       if (user) {
         res.locals.authenticated = true;
         res.locals.user = user
-        next();
+        return next();
       }
     } catch (e) {
       res.locals.authenticated = false;
-      next(e);
+      return next(e);
     }
   } else {
     res.locals.authenticated = false;
-    next();
+    return next();
   }
 };
 
