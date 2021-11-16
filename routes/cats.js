@@ -29,7 +29,7 @@ router.get('/:id(\\d+)', restoreUser, asyncHandler(async (req, res) => {
 //Does not work due to sessionID error
 router.get('/new', csrfProtection, restoreUser, asyncHandler(async(req, res) => {
     const { userId } = req.session.auth
-    const cat = cat.build();
+    const cat = await Cat.build();
     res.render('new-cat', {Title: 'New cat', csrfToken: req.csrfToken(), cat, userId});
 }));
 
