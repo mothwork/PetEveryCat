@@ -1,0 +1,11 @@
+extends layout.pug
+
+block content
+    .cat
+        h1= cat.name
+        ul
+            li= cat.breed
+            li= cat.coat
+            li= cat.size
+            li= cat.friendly
+        a(href=`/users/${cat.User.id}`)= cat.User.name 
