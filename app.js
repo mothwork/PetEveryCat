@@ -11,7 +11,8 @@ const catListsRouter = require('./routes/catlists')
 const usersRouter = require('./routes/users');
 const apiCatListRouter = require('./routes/api-catlists');
 const apiReviewRouter = require('./routes/api-reviews');
-const catsRouter = require('./routes/cats')
+const catsRouter = require('./routes/cats');
+const reviewsRouter = require('./routes/reviews')
 
 const { sessionSecret } = require('./config');
 const { restoreUser, requireAuth } = require('./auth');
@@ -51,6 +52,7 @@ app.use('/cats', catsRouter)
 app.use('/catlists', catListsRouter);
 app.use('/api/catlists', apiCatListRouter);
 app.use('/api/reviews', apiReviewRouter);
+app.use('/reviews', reviewsRouter);
 
 
 // catch 404 and forward to error handler
