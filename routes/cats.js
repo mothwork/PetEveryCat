@@ -1,10 +1,11 @@
 const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { Cat, User } = db
+//const { Cat, User, CatsInList, Review } = db
 const { restoreUser } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
+const review = require('../db/models/review')
 
 const router = express.Router()
 
@@ -105,8 +106,14 @@ router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, async
 }))
 
 router.delete('/:id(\\d+)', async(req, res) => {
-    const cat = await Cat.findByPk(req.params.id)
+    const catId = req.params.id
+    //await db.CatList.destroy({where: {catId}})
+    await db.CatsInList.destroy({where: {catId}})
+    await db.Review.destroy({where: {catId}})
+    
+    const cat = await db.Cat.findByPk(catId)
     await cat.destroy()
+
     res.json({message: 'successful'})
 })
 
