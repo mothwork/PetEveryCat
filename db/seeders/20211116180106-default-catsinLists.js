@@ -22,6 +22,6 @@ module.exports = {
 
       Example:
       */
-   return queryInterface.bulkDelete('CatsInLists', null, {});
+     return queryInterface.bulkDelete('CatsInLists', null, {});
   }
 };
