@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async e => {
             const catListName = catListToRemove.querySelector('a').innerText;
             if (window.confirm(`Are you sure you want to delete catlist "${catListName}"?`)) {
                 catListToRemove.innerHTML = '';
-                const catList = await fetch (`api/catlists/${id}`, {
+                await fetch (`/api/catlists/${id}`, {
                     method: "DELETE"
                 });
             }

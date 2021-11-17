@@ -15,6 +15,7 @@ const catListNotFound = catListId => {
     error.status = 404;
     return error;
 };
+
 router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   const id = req.params.id;
   const catList = await CatList.findByPk(id);
