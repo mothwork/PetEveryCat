@@ -1,7 +1,7 @@
 const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-//const { Cat, User, CatsInList, Review } = db
+const { Cat, User, CatsInList, Review } = db
 const { restoreUser } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
@@ -84,14 +84,14 @@ router.post('/new', csrfProtection, restoreUser, catValidators, asyncHandler(asy
 
 router.get('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, asyncHandler(async(req, res) => {
     const catId = req.params.id;
-    const cat = await Cat.findByPk(catId);
+    const cat = await db.Cat.findByPk(catId);
 
     res.render('cats-edit', {Title: 'Edit Cat', cat, csrfToken: req.csrfToken()})
 }))
 
 router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, asyncHandler(async(req, res) => {
     const catId = req.params.id;
-    const catToUpdate = await Cat.findByPk(catId);
+    const catToUpdate = await db.Cat.findByPk(catId);
     const { name, breed, size, friendly, coat, imgUrl } = req.body;
 
     const cat = { name, breed, size, friendly, coat, imgUrl }
@@ -110,7 +110,6 @@ router.delete('/:id(\\d+)', async(req, res) => {
     //await db.CatList.destroy({where: {catId}})
     await db.CatsInList.destroy({where: {catId}})
     await db.Review.destroy({where: {catId}})
-    
     const cat = await db.Cat.findByPk(catId)
     await cat.destroy()
 
