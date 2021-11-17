@@ -6,6 +6,7 @@ const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
 const { User, Cat, CatList } = db
 const { loginUser, logOutUser, restoreUser, } = require('../auth');
+const { demoUser } = require('../config/index');
 
 
 /* GET users listing. */
@@ -141,6 +142,11 @@ router.get('/:id(\\d+)/cats', restoreUser, asyncHandler(async (req, res) => {
   res.render('my-cats', {Title: 'My Cats', cats})
 }))
 
-
+router.post('/demouser', asyncHandler(async(req, res) => {
+  const username = demoUser;
+  const demouser = await User.findOne({ where: { username } })
+  loginUser(req, res, demouser);
+  res.redirect('/');
+}))
 
 module.exports = router;

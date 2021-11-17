@@ -8,9 +8,26 @@ html
     nav
       a(href="/") Home
       if locals.authenticated
+        a(href='/') My Cats
+        a(href='/cats') Cats
+        a(href='/catlists') Cat Lists
         form(action='/users/log-out' method="post")
           button(type="submit") Log Out
       else
         a(href="/users/log-in") Log In
         a(href="/users/sign-up") Sign Up
+        form(method='post' action='/users/demouser')
+          button Demo User
+    footer
+      div
+        p Created By:
+        ul
+          li
+            a(href="https://github.com/mothwork") Brett Hageft
+          li
+            a(href="https://github.com/hisownspace") David Nash
+          li
+            a(href="https://github.com/gabrielaspuria") Gabriel Aspuria
+          li
+            a(href="https://github.com/josephjyang") Joseph Yang
     block content

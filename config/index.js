@@ -7,5 +7,8 @@ module.exports = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
   },
-  sessionSecret: process.env.SESSION_SECRET
+  sessionSecret: process.env.SESSION_SECRET,
+  demoUser: process.env.DEMO_USERNAME,
+  demoPassword: process.env.DEMO_PASSWORD
+  
 };

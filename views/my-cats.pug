@@ -4,6 +4,9 @@ append head
   link(rel="stylesheet" href="/stylesheets/index.css")
   script(src="/javascripts/mycats.js" type="module" defer)
 block content
+    append nav
+        form(action='/cats/new' method='get')
+            button Add Cat
     h1 My Cats
     table
         thead
