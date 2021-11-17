@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", async e => {
             catListToEdit.innerHTML = ''
             catListToEdit.appendChild(editForm);
             editForm.addEventListener("submit", async e => {
+                e.preventDefault();
                 const formData = new FormData(editForm);
                 const name = formData.get('name');
                 const body = { name };
