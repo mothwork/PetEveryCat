@@ -30,6 +30,21 @@ const logOutUser = (req, res) => {
   delete req.session.auth
 }
 
+const requireAuth = (req, res, next) => {
+  if (!res.locals.authenticated) {
+    return res.redirect('/users/log-in')
+  }
+  return next()
+}
+
+const checkPermissions = (resource, currentUser) => {
+  if (resource.userId !== currentUser.id) {
+    const err = new Error('Unauthorized Operation')
+    err.status = 403;
+    throw err
+  }
+
+}
 
 
-module.exports = { loginUser, restoreUser, logOutUser };
+module.exports = { loginUser, restoreUser, logOutUser, requireAuth, checkPermissions };

@@ -4,8 +4,9 @@ const { csrfProtection, asyncHandler } = require('../utils')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
-const { User } = db
-const { loginUser, logOutUser, } = require('../auth');
+const { User, Cat, CatList } = db
+const { loginUser, logOutUser, restoreUser, } = require('../auth');
+
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -74,6 +75,9 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
     const hashedPassword = await bcrypt.hash(password, 10);
     user.hashedPassword = hashedPassword;
     await user.save()
+    await CatList.create({userId: user.id, name: "Pet", canDelete: false});
+    await CatList.create({userId: user.id, name: "Want to Pet", canDelete: false});
+    await CatList.create({userId: user.id, name: "Currently Petting", canDelete: false});
     // TO DO: log in user
     loginUser(req, res, user);
     return res.redirect('/');
@@ -103,13 +107,13 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
   const validatorErrors = validationResult(req);
   const errors = []
 
-  if (validatorErrors.isEmpty()){
-    const user = await User.findOne({where: {username}})
+  if (validatorErrors.isEmpty()) {
+    const user = await User.findOne({ where: { username } })
 
-    if (user){
+    if (user) {
       const isPassword = await bcrypt.compare(password, user.hashedPassword.toString())
 
-      if (isPassword){
+      if (isPassword) {
         //TODO Log user in
         loginUser(req, res, user);
         return res.redirect('/')
@@ -120,15 +124,23 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
     errors = validatorErrors.array().map((e) => e.msg)
   }
 
-  res.render('log-in', {Title: "Log In", csrfToken: req.csrfToken(), errors, username} )
+  res.render('log-in', { Title: "Log In", csrfToken: req.csrfToken(), errors, username })
 
 
 }))
 
 
-router.post('/log-out', (req,res) => {
+router.post('/log-out', (req, res) => {
   logOutUser(req, res);
   res.redirect('/')
 })
+
+router.get('/:id(\\d+)/cats', restoreUser, asyncHandler(async (req, res) => {
+  const userId = req.params.id
+  const cats = await Cat.findAll({where: {userId}})
+  res.render('my-cats', {Title: 'My Cats', cats})
+}))
+
+
 
 module.exports = router;

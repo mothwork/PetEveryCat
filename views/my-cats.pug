@@ -1,0 +1,26 @@
+extends layout
+append head
+  //- add page specific styles by appending to the head
+  link(rel="stylesheet" href="/stylesheets/index.css")
+  script(src="/javascripts/mycats.js" type="module" defer)
+block content
+    h1 My Cats
+    table
+        thead
+            tr
+                th
+                th Cat Name
+                th Date Created
+                th Date Edited
+                th
+                th
+        tbody
+            each cat in cats
+                tr(class=`cat-${cat.id}`)
+                    //- td= img(src=`${cat.imgUrl}`, alt="")
+                    td= cat.name
+                    td= cat.dateCreated
+                    td= cat.dataUpdated
+                    td
+                        a(href=`/cats/edit/${cat.id}` role='button') Edit
+                        button(class="delete" id=cat.id) Delete

@@ -26,6 +26,11 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      canDelete: {
+        // allowNull:false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       }
     });
   },
