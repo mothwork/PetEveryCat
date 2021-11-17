@@ -7,26 +7,16 @@ const { User, CatList, Cat, Review } = db
 router.get('/', asyncHandler(async(req, res) => {
     const catLists = await CatList.findAll({ where: { userId: req.session.auth.userId }, include: Cat })
     res.render('cat-lists', { title: "My Cat Lists", catLists });
-}))
+}));
 
-router.get('/api', asyncHandler(async (req, res) => {
-    const catLists = await CatList.findAll({ where: { userId: req.session.auth.userId }, include: Cat })
-    res.json(catLists);
-}))
-
-const catListNotFound = catListId => {
-    const error = new Error(`Cat List with ID ${catListId} could not be found`);
-    error.title = "Cat List not found.";
-    error.status = 404;
-    return error;
-};
-
-router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
+router.get('/:id(\\d+)', asyncHandler(async (req, res, next) => {
     const catListId = req.params.id;
-    const catList = await CatList.findByPk(catListId, { include: {
-        model: Cat,
-        include: Review
-    } } );
+    const catList = await CatList.findByPk(catListId, {
+        include: {
+            model: Cat,
+            include: Review
+        }
+    });
 
     // Question: Do we want to include average reviews in the list?
     if (!catList || catList.userId !== req.session.auth.userId) {

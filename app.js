@@ -9,7 +9,9 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const indexRouter = require('./routes/index');
 const catListsRouter = require('./routes/catlists')
 const usersRouter = require('./routes/users');
+const apiCatListRouter = require('./routes/api-catlists');
 const catsRouter = require('./routes/cats')
+
 const { sessionSecret } = require('./config');
 const { restoreUser, requireAuth } = require('./auth');
 
@@ -44,11 +46,10 @@ store.sync();
 app.use(restoreUser);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-<<<<<<< HEAD
 app.use('/cats', catsRouter)
-=======
 app.use('/catlists', catListsRouter);
->>>>>>> main
+app.use('/api/catlists', apiCatListRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
