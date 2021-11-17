@@ -9,6 +9,11 @@ router.get('/', asyncHandler(async(req, res) => {
     res.render('cat-lists', { title: "My Cat Lists", catLists });
 }))
 
+router.get('/api', asyncHandler(async (req, res) => {
+    const catLists = await CatList.findAll({ where: { userId: req.session.auth.userId }, include: Cat })
+    res.json(catLists);
+}))
+
 const catListNotFound = catListId => {
     const error = new Error(`Cat List with ID ${catListId} could not be found`);
     error.title = "Cat List not found.";
