@@ -9,4 +9,22 @@ router.get('/', asyncHandler(async(req, res) => {
     res.render('cat-lists', { title: "My Cat Lists", catLists });
 }));
 
+router.get('/:id(\\d+)', asyncHandler(async (req, res, next) => {
+    const catListId = req.params.id;
+    const catList = await CatList.findByPk(catListId, {
+        include: {
+            model: Cat,
+            include: Review
+        }
+    });
+
+    // Question: Do we want to include average reviews in the list?
+    if (!catList || catList.userId !== req.session.auth.userId) {
+        return next(catListNotFound(req.params.id));
+    }
+    else {
+        res.render('cat-list', { title: catList.name, catList, userId: req.session.auth.userId })
+    }
+}));
+
 module.exports = router

@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", async e => {
         catListContainer.innerHTML = catListHTML.join("");
         
         const deleteBtns = document.querySelectorAll(".delete");
+        
         const editBtns = document.querySelectorAll(".edit");
         
         deleteBtns.forEach(button => button.addEventListener("click", async e => {
@@ -32,6 +33,34 @@ document.addEventListener("DOMContentLoaded", async e => {
                     method: "DELETE"
                 });
             }
+        }));
+
+        editBtns.forEach(button => button.addEventListener("click", async e => {
+            e.preventDefault();
+            const catListId = button.id;
+            const id = catListId.split("-")[0]
+            const catListToEdit = document.getElementById(`${id}-catList`)
+            const text = catListToEdit.querySelector('a').innerHTML
+            const editForm = document.createElement("form");
+            editForm.innerHTML = `
+                <label for="name">Name</label>
+                <input name="name" type="text" value="${text}">
+                <button id="edit">Submit</button>
+                <input type="button" value="Cancel">
+            `
+            catListToEdit.innerHTML = ''
+            catListToEdit.appendChild(editForm);
+            editForm.addEventListener("submit", async e => {
+                const formData = new FormData(editForm);
+                const name = formData.get('name');
+                const body = { name };
+                await fetch(`/api/catlists/${id}`, {
+                    method: "PUT",
+                    body: JSON.stringify(body),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                await newList()
+            });
         }));
     };
     
@@ -56,15 +85,14 @@ document.addEventListener("DOMContentLoaded", async e => {
             const formData = new FormData(form);
             const name = formData.get('name');
             const body = { name };
-            const res = await fetch('/api/catlists', {
+            await fetch('/api/catlists', {
                 method: 'POST',
                 body: JSON.stringify( body ),
                 headers: { 'Content-Type': 'application/json' }
             });
-            const catList = await res.json();
             await newList();
             form.remove();
-        createBtn.disabled = false;
+            createBtn.disabled = false;
         });
     });
 

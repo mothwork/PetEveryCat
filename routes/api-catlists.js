@@ -15,23 +15,6 @@ const catListNotFound = catListId => {
     error.status = 404;
     return error;
 };
-
-router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
-    const catListId = req.params.id;
-    const catList = await CatList.findByPk(catListId, { include: {
-        model: Cat,
-        include: Review
-    } } );
-
-    // Question: Do we want to include average reviews in the list?
-    if (!catList || catList.userId !== req.session.auth.userId) {
-        return next(catListNotFound(req.params.id));
-    }
-    else {
-        res.render('cat-list', { title: catList.name, catList, userId: req.session.auth.userId })
-    }
-}));
-
 router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   const id = req.params.id;
   const catList = await CatList.findByPk(id);
@@ -54,5 +37,27 @@ router.post('/', asyncHandler(async (req, res) => {
     res.json(newCatList);
   }
 }));
+
+router.put(
+  "/:id(\\d+)",
+  // tweetValidators,
+  // handleValidationErrors,
+  asyncHandler(async (req, res, next) => {
+    const id = req.params.id;
+    const { name } = req.body;
+
+    const catList = await CatList.findByPk(id);
+
+    if (catList) {
+      const updatedCatList = await catList.update({
+        name
+      });
+
+      res.json(updatedCatList);
+    } else {
+      next(catListNotFound(id));
+    }
+  })
+);
 
 module.exports = router
