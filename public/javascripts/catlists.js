@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async e => {
-    
+    let createBtn;
     const newList = async () => {
         const catListContainer = document.querySelector('.catlist-container');
         const res = await fetch ("/api/catlists");
@@ -16,31 +16,30 @@ document.addEventListener("DOMContentLoaded", async e => {
             `
         });
         catListContainer.innerHTML = catListHTML.join("");
+        
+        const deleteBtns = document.querySelectorAll(".delete");
+        const editBtns = document.querySelectorAll(".edit");
+        
+        deleteBtns.forEach(button => button.addEventListener("click", async e => {
+            e.preventDefault();
+            const catListId = button.id;
+            const id = catListId.split("-")[0]
+            const catListToRemove = document.getElementById(`${id}-catList`)
+            const catListName = catListToRemove.querySelector('a').innerText;
+            if (window.confirm(`Are you sure you want to delete catlist "${catListName}"?`)) {
+                catListToRemove.innerHTML = '';
+                const catList = await fetch (`api/catlists/${id}`, {
+                    method: "DELETE"
+                });
+            }
+        }));
     };
     
     await newList();
-
-    const createBtn = document.createElement("button");
+    
+    createBtn = document.createElement("button");
     createBtn.innerHTML = "Create New Cat List";
     document.body.appendChild(createBtn);
-
-    const deleteBtns = document.querySelectorAll(".delete");
-
-    console.log(deleteBtns);
-    deleteBtns.forEach(button => button.addEventListener("click", async e => {
-        e.preventDefault();
-        console.log('I am in!');
-        const catListId = button.id;
-        const id = catListId.split("-")[0]
-        const catListToRemove = document.getElementById(`${id}-catList`)
-        const catListName = catListToRemove.querySelector('a').innerText;
-        if (window.confirm(`Are you sure you want to delete catlist "${catListName}"?`)) {
-            catListToRemove.innerHTML = '';
-            const catList = await fetch (`api/catlists/${id}`, {
-                method: "DELETE"
-            });
-        }
-    }));
     
     createBtn.addEventListener("click", async e => {
         e.preventDefault();
