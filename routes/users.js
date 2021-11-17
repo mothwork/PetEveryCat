@@ -4,7 +4,7 @@ const { csrfProtection, asyncHandler } = require('../utils')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
-const { User, Cat, CatList } = db
+const { User, Cat, CatList, Review } = db
 const { loginUser, logOutUser, restoreUser, } = require('../auth');
 const { demoUser } = require('../config/index');
 
@@ -147,6 +147,14 @@ router.post('/demouser', asyncHandler(async(req, res) => {
   const demouser = await User.findOne({ where: { username } })
   loginUser(req, res, demouser);
   res.redirect('/');
-}))
+}));
+
+
+router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const reviews = await Review.findAll({ include: Cat, where: { userId }});
+  res.render('my-reviews', { title: 'My Reviews', reviews });
+}));
 
 module.exports = router;

@@ -1,0 +1,25 @@
+extends layout.pug 
+
+block content
+    script(src="/javascripts/reviews.js" type="module")
+    h1 My Reviews
+    table
+        thead
+            tr
+                th
+                th Cat Name
+                th Rating
+                th Review
+                th
+                th
+        tbody
+            each review in reviews
+                tr(id=`review-${review.id}`)
+                    td
+                      img(src=`${review.Cat.imgUrl}`, alt="", style="max-width: 150px")
+                    td= review.Cat.name
+                    td= review.rating
+                    td= review.content
+                    td
+                        a(href=`/reviews/${review.id}/edit` role='button') Edit
+                        button(class="delete" id=review.id) Delete
