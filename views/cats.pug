@@ -1,0 +1,8 @@
+extends layout.pug
+
+block content
+    .catsContainer
+        each cat in cats
+            .catContainer
+            -// Not sure if this works
+                a(href=`/cats/${cat.id}`)= cat.name
