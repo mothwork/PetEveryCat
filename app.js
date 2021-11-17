@@ -10,7 +10,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const catsRouter = require('./routes/cats')
 const { sessionSecret } = require('./config');
-const { restoreUser } = require('./auth');
+const { restoreUser, requireAuth } = require('./auth');
 
 const app = express();
 

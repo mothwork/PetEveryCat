@@ -2,12 +2,18 @@ const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
 const { Cat, User, CatsInList, Review } = db
-const { restoreUser } = require("../auth")
+const { restoreUser, requireAuth, checkPermissions } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
 const review = require('../db/models/review')
 
 const router = express.Router()
+
+
+
+
+
+
 
 router.get('/', restoreUser, asyncHandler(async (req, res) => {
     try {
@@ -28,8 +34,8 @@ router.get('/:id(\\d+)', restoreUser, asyncHandler(async (req, res) => {
     res.render("cat-info", {Title: `${cat.name}`, cat}) //Does this work?
 }))
 
-//Does not work due to sessionID error
-router.get('/new', csrfProtection, restoreUser, asyncHandler(async(req, res) => {
+
+router.get('/new', csrfProtection, restoreUser, requireAuth, asyncHandler(async(req, res) => {
     const { userId } = req.session.auth
     const cat = await Cat.build();
     res.render('new-cat', {Title: 'New cat', csrfToken: req.csrfToken(), cat, userId});
@@ -62,7 +68,7 @@ const catValidators = [
         .withMessage('Color of coat must be less than 50 characters'),
 ]
 
-router.post('/new', csrfProtection, restoreUser, catValidators, asyncHandler(async(req, res) =>{
+router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async(req, res) =>{
     const { name, breed, size, friendly, coat, userId, imgUrl } = req.body;
     const newCat = await Cat.build({
         name, breed, size, friendly, coat, userId, imgUrl
@@ -82,16 +88,21 @@ router.post('/new', csrfProtection, restoreUser, catValidators, asyncHandler(asy
     }
 }))
 
-router.get('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, asyncHandler(async(req, res) => {
+router.get('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async(req, res) => {
     const catId = req.params.id;
     const cat = await db.Cat.findByPk(catId);
+
+    checkPermissions(cat, res.locals.user)
 
     res.render('cats-edit', {Title: 'Edit Cat', cat, csrfToken: req.csrfToken()})
 }))
 
-router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, asyncHandler(async(req, res) => {
+router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async(req, res) => {
     const catId = req.params.id;
     const catToUpdate = await db.Cat.findByPk(catId);
+
+    checkPermissions(catToUpdate, res.locals.user)
+
     const { name, breed, size, friendly, coat, imgUrl } = req.body;
 
     const cat = { name, breed, size, friendly, coat, imgUrl }
@@ -105,12 +116,13 @@ router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, catValidators, async
     }
 }))
 
-router.delete('/:id(\\d+)', async(req, res) => {
+router.delete('/:id(\\d+)', requireAuth, async(req, res) => {
     const catId = req.params.id
+    const cat = await db.Cat.findByPk(catId)
+    checkPermissions(cat, res.locals.user)
     //await db.CatList.destroy({where: {catId}})
     await db.CatsInList.destroy({where: {catId}})
     await db.Review.destroy({where: {catId}})
-    const cat = await db.Cat.findByPk(catId)
     await cat.destroy()
 
     res.json({message: 'successful'})
