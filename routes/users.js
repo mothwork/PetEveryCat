@@ -4,7 +4,7 @@ const { csrfProtection, asyncHandler } = require('../utils')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
-const { User } = db
+const { User, CatList } = db
 const { loginUser, logOutUser, } = require('../auth');
 
 /* GET users listing. */
@@ -73,6 +73,9 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
   if (validatorErrors.isEmpty()) {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.hashedPassword = hashedPassword;
+    await CatList.create({userId: user.id, name: "Pet"});
+    await CatList.create({userId: user.id, name: "Want to Pet"});
+    await CatList.create({userId: user.id, name: "Currently Petting"});
     await user.save()
     // TO DO: log in user
     loginUser(req, res, user);
