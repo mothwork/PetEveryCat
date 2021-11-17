@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       allowNull: false,
       type: DataTypes.INTEGER
+    },
+    canDelete: {
+      // allowNull:false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
   }, {});
   CatList.associate = function(models) {

@@ -73,10 +73,10 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
   if (validatorErrors.isEmpty()) {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.hashedPassword = hashedPassword;
-    await CatList.create({userId: user.id, name: "Pet"});
-    await CatList.create({userId: user.id, name: "Want to Pet"});
-    await CatList.create({userId: user.id, name: "Currently Petting"});
     await user.save()
+    await CatList.create({userId: user.id, name: "Pet", canDelete: false});
+    await CatList.create({userId: user.id, name: "Want to Pet", canDelete: false});
+    await CatList.create({userId: user.id, name: "Currently Petting", canDelete: false});
     // TO DO: log in user
     loginUser(req, res, user);
     return res.redirect('/');

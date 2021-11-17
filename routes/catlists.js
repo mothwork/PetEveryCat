@@ -40,7 +40,7 @@ router.get('/:id(\\d+)', asyncHandler(async(req, res, next) => {
 router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   const id = req.params.id;
   const catList = await CatList.findByPk(id);
-  if (catList) {
+  if (catList && catList.canDelete) {
     await catList.destroy();
     res.status = 204;
     return res.end();

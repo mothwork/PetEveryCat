@@ -4,13 +4,22 @@ document.addEventListener("DOMContentLoaded", async e => {
     const catLists = await res.json();
 
     const catListHTML = catLists.map(catList => {
-        return `
-        <div id="${catList.id}-catList">
-          <a href="/catLists/${catList.id}">${catList.name}</a>
-          <button id="${catList.id}-edit" class="edit">Edit Cat List</button>
-          <button id="${catList.id}-delete" class="delete">Delete Cat List</button>
-        </div>
-        `
+        if (catList.canDelete) {
+            return `
+            <div id="${catList.id}-catList">
+              <a href="/catLists/${catList.id}">${catList.name}</a>
+              <button id="${catList.id}-edit" class="edit">Edit Cat List</button>
+              <button id="${catList.id}-delete" class="delete">Delete Cat List</button>
+            </div>
+            `
+        } else {
+            return `
+            <div id="${catList.id}-catList">
+              <a href="/catLists/${catList.id}">${catList.name}</a>
+              <button id="${catList.id}-edit" class="edit">Edit Cat List</button>
+            </div>
+            `
+        }
     })
 
     document.body.innerHTML += catListHTML.join("");
