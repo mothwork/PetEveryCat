@@ -8,13 +8,13 @@ block content
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             //- add csrf
+            input(type="hidden" name="_csrf" value=csrfToken)
             select(name="catList")
-
                 option(value="Want to Pet") Want to Pet
                 option(value="Currently Petting") Currently Petting
                 option(value="Pet") Pet
-                option(value='' selected) 
-            button Add to Cat List
+                option(value=`${catListVal}` selected)= `In list: ${catListId}`
+            button Update Pet Status
         ul
             li= cat.breed
             li= cat.coat

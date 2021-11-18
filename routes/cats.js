@@ -26,12 +26,36 @@ router.get('/', restoreUser, asyncHandler(async (req, res) => {
 
 }))
 
-router.get('/:id(\\d+)', restoreUser, asyncHandler(async (req, res) => {
+router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, res) => {
     const id = req.params.id
+    const catId = id
+    const userId = res.locals.user.id
     const cat = await Cat.findOne({where: {id}}, {include: {User}})
-    //TODO add user link
-    //TODO add reviews
-    res.render("cat-info", {Title: `${cat.name}`, cat}) //Does this work?
+    const lists = await CatList.findAll({where: {userId}})
+    const listsCatIsIn = await CatsInList.findAll({where: {catId}, })
+
+    let catListId
+    let catListVal
+
+    for (let i = 0; i < lists.length; i++) {
+        const listEntry = lists[i];
+        for (let j = 0; j < listsCatIsIn.length; j++) {
+            const catsInListEntry = listsCatIsIn[j];
+            if (listEntry.id === catsInListEntry.catListId) {
+                catListId = listEntry.name
+                catListVal= listEntry.name
+                break
+            }
+
+        }
+    }
+    if (!catListId){
+        catListId = "Want to Pet?"
+        catListVal = "Want to Pet"
+    }
+
+
+    res.render("cat-info", {Title: `${cat.name}`, cat, catListId, catListVal, csrfToken: req.csrfToken()}) //Does this work?
 }))
 
 
@@ -128,9 +152,9 @@ router.delete('/:id(\\d+)', requireAuth, async(req, res) => {
     res.json({message: 'successful'})
 })
 
-router.post(`/:id/addToCatList`, restoreUser, requireAuth, asyncHandler( async (req, res) => {
+router.post(`/:id/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler( async (req, res) => {
     //TODO add csrf protection to individual cat route
-    //get the user id
+
     const catId = req.params.id
     const userId = res.locals.user.id
     const lists = await CatList.findAll({where: {userId}})
@@ -162,19 +186,14 @@ router.post(`/:id/addToCatList`, restoreUser, requireAuth, asyncHandler( async (
             catListId: id
         }})
     }
-    
+
     await CatsInList.create({
         catListId,
         catId,
     })
 
-    //await newCatInList.save()
-    res.redirect('/catlists')
+    res.redirect(`/cats/${catId}`)
 
-    //get the cat list associated with that id from the request
-
-    //add the cat to the list they chose
-    //check the other two lists, and remove the cat if it is found on those lists
 }))
 
 module.exports = router
