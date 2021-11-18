@@ -11,6 +11,7 @@ html
         a(href=`/users/${user.id}/cats`) My Cats
         a(href='/cats') Cats
         a(href='/catlists') Cat Lists
+        a(href=`/users/${user.id}`) My Profile
         form(action='/users/log-out' method="post")
           button(type="submit") Log Out
       else
@@ -18,6 +19,7 @@ html
         a(href="/users/sign-up") Sign Up
         form(method='post' action='/users/demouser')
           button Demo User
+    block content
     footer
       div
         p Created By:
@@ -30,4 +32,3 @@ html
             a(href="https://github.com/gabrielaspuria") Gabriel Aspuria
           li
             a(href="https://github.com/josephjyang") Joseph Yang
-    block content

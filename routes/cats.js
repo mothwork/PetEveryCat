@@ -9,11 +9,6 @@ const e = require('express')
 const router = express.Router()
 
 
-
-
-
-
-
 router.get('/', restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
