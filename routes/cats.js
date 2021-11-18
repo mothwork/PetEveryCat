@@ -33,6 +33,8 @@ router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, r
     const lists = await CatList.findAll({ where: { userId } })
     const listsCatIsIn = await CatsInList.findAll({ where: { catId }, })
 
+    const notDefaultList = lists.filter(list => list.canDelete === true);
+
     const reviews = await Review.findAll({ include: User, where: { catId } })
 
     let catListId
@@ -56,7 +58,7 @@ router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, r
     }
 
 
-    res.render("cat-info", { Title: `${cat.name}`, cat, catListId, catListVal, reviews, csrfToken: req.csrfToken() }) //Does this work?
+    res.render("cat-info", { Title: `${cat.name}`, cat, catListId, catListVal, reviews, csrfToken: req.csrfToken(), notDefaultList }) //Does this work?
 }))
 
 
@@ -153,7 +155,21 @@ router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
     res.json({ message: 'successful' })
 })
 
-router.post(`/:id/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
+router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => { 
+    const { catListId } = req.body;
+    const catId = req.params.id;
+    const catList = await CatList.findByPk(catListId);
+
+    checkPermissions(catList, res.locals.user);
+
+    const newCatinList = await CatsInList.build({ catId, catListId });
+    await newCatinList.save();
+
+    res.redirect(`/cats/${catId}`);
+}));
+
+
+router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
     //TODO add csrf protection to individual cat route
 
     const catId = req.params.id
