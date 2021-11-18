@@ -15,16 +15,18 @@ block content
                 th Cat Name
                 th Date Created
                 th Date Edited
-                th
+                th Options
                 th
         tbody
             each cat in cats
                 tr(class=`cat-${cat.id}`)
-                    //- td= img(src=`${cat.imgUrl}`, alt="")
+                    //img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
+                    td
+                        img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
                     td
                         a(href=`/cats/${cat.id}`)= cat.name
-                    td= cat.dateCreated
-                    td= cat.dataUpdated
+                    td= cat.createdAt.getMonth()+"/"+cat.createdAt.getDate()+"/"+cat.createdAt.getFullYear()+" "+cat.createdAt.getHours()+":"+cat.createdAt.getMinutes()
+                    td= cat.updatedAt.getMonth()+"/"+cat.updatedAt.getDate()+"/"+cat.updatedAt.getFullYear()+" "+cat.updatedAt.getHours()+":"+cat.updatedAt.getMinutes()
                     td
                         a(href=`/cats/edit/${cat.id}` role='button') Edit
                         button(class="delete" id=cat.id) Delete
