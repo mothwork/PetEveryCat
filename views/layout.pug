@@ -8,7 +8,7 @@ html
     nav
       a(href="/") Home
       if locals.authenticated
-        a(href='/') My Cats
+        a(href=`/users/${user.id}/cats`) My Cats
         a(href='/cats') Cats
         a(href='/catlists') Cat Lists
         form(action='/users/log-out' method="post")

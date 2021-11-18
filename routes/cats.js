@@ -1,7 +1,7 @@
 const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { Cat, User, CatsInList, Review } = db
+const { Cat, User, CatsInList, Review, CatList } = db
 const { restoreUser, requireAuth, checkPermissions } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
@@ -25,12 +25,36 @@ router.get('/', restoreUser, asyncHandler(async (req, res) => {
 
 }))
 
-router.get('/:id(\\d+)', restoreUser, asyncHandler(async (req, res) => {
+router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, res) => {
     const id = req.params.id
+    const catId = id
+    const userId = res.locals.user.id
     const cat = await Cat.findOne({where: {id}}, {include: {User}})
-    //TODO add user link
-    //TODO add reviews
-    res.render("cat-info", {Title: `${cat.name}`, cat}) //Does this work?
+    const lists = await CatList.findAll({where: {userId}})
+    const listsCatIsIn = await CatsInList.findAll({where: {catId}, })
+
+    let catListId
+    let catListVal
+
+    for (let i = 0; i < lists.length; i++) {
+        const listEntry = lists[i];
+        for (let j = 0; j < listsCatIsIn.length; j++) {
+            const catsInListEntry = listsCatIsIn[j];
+            if (listEntry.id === catsInListEntry.catListId) {
+                catListId = listEntry.name
+                catListVal= listEntry.name
+                break
+            }
+
+        }
+    }
+    if (!catListId){
+        catListId = "Want to Pet?"
+        catListVal = "Want to Pet"
+    }
+
+
+    res.render("cat-info", {Title: `${cat.name}`, cat, catListId, catListVal, csrfToken: req.csrfToken()}) //Does this work?
 }))
 
 
@@ -127,6 +151,49 @@ router.delete('/:id(\\d+)', requireAuth, async(req, res) => {
     res.json({message: 'successful'})
 })
 
+router.post(`/:id/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler( async (req, res) => {
+    //TODO add csrf protection to individual cat route
+
+    const catId = req.params.id
+    const userId = res.locals.user.id
+    const lists = await CatList.findAll({where: {userId}})
+
+    const {
+        catList
+    } = req.body
+
+    let catListId
+    for (let i = 0; i < lists.length; i++) {
+        const list = lists[i];
+        if (list.name === catList){
+            catListId = list.id
+        }
+    }
+
+    let toDeleteArr = []
+    for (let i = 0; i < lists.length; i++) {
+        const list = lists[i];
+        if (list.id !== catListId) {
+            toDeleteArr.push(list.id)
+        }
+    }
+    //First we want to destroy any lists the cat is in?
+    for (let i = 0; i < toDeleteArr.length; i++) {
+        let id = toDeleteArr[i]
+        await CatsInList.destroy({where:{
+            catId: catId,
+            catListId: id
+        }})
+    }
+
+    await CatsInList.create({
+        catListId,
+        catId,
+    })
+
+    res.redirect(`/cats/${catId}`)
+
+}))
 router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
 
     const catId = req.params.id;

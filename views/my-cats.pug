@@ -21,7 +21,8 @@ block content
             each cat in cats
                 tr(class=`cat-${cat.id}`)
                     //- td= img(src=`${cat.imgUrl}`, alt="")
-                    td= cat.name
+                    td
+                        a(href=`/cats/${cat.id}`)= cat.name
                     td= cat.dateCreated
                     td= cat.dataUpdated
                     td
