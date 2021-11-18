@@ -9,7 +9,12 @@ const e = require('express')
 const router = express.Router()
 
 
-router.get('/', restoreUser, asyncHandler(async (req, res) => {
+
+
+
+
+
+router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
         res.render('cats', { Title: 'Cats', cats })
@@ -20,7 +25,7 @@ router.get('/', restoreUser, asyncHandler(async (req, res) => {
 
 }))
 
-router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, res) => {
+router.get('/:id(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
     const id = req.params.id
     const catId = id
     const userId = res.locals.user.id
@@ -117,8 +122,11 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
     // const errors = [];
     const validatorErrors = validationResult(req);
     if (validatorErrors.isEmpty()) {
+
         await newCat.save();
         const cat = await Cat.findOne({ where: { name } });
+        const catList = await CatList.findOne({where:{name:"Want to Pet", userId: res.locals.user.id}})
+        await CatsInList.create({catId: cat.id, catListId: catList.id})
         res.redirect(`/cats/${cat.id}`);
     } else {
         const errors = validatorErrors.array().map(e => {
@@ -205,7 +213,7 @@ router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth,
     }
     //Finds the lists that the cat is in
     let toDeleteArr = []
-    const selectedList = await CatList.findByPk(catId)
+    const selectedList = await CatList.findByPk(catListId)
     if (!selectedList.canDelete) {
 
         for (let i = 0; i < lists.length; i++) {

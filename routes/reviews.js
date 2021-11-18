@@ -7,6 +7,9 @@ const db = require('../db/models')
 const { User, Cat, CatList, Review } = db
 const { loginUser, logOutUser, restoreUser, } = require('../auth');
 const { demoUser } = require('../config/index');
+const { requireAuth } = require('../auth')
+
+router.use(requireAuth)
 
 router.get('/:id(\\d+)/edit', csrfProtection, asyncHandler(async(req, res) => {
     const reviewId = req.params.id;

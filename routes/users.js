@@ -15,6 +15,13 @@ router.get('/', asyncHandler(async (req, res, next) => {
   res.render('users', {title: 'Pet Every Cat Users', users});
 }));
 
+router.post('/demouser', asyncHandler(async(req, res) => {
+  const username = demoUser;
+  const demouser = await User.findOne({ where: { username } })
+  loginUser(req, res, demouser);
+  res.redirect(`/users/${demouser.id}/cats`);
+}));
+
 router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
   const userId = req.params.id;
   const currentUser = res.locals.user.id
@@ -186,11 +193,18 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
 }))
 
+router.use(requireAuth)
 
 router.post('/log-out', (req, res) => {
   logOutUser(req, res);
   res.redirect('/')
 })
+
+router.get('/:id(\\d+)',  csrfProtection, asyncHandler(async(req, res) => {
+  const userId = req.params.id;
+  const user = await User.findByPk(userId, {include: [Cat, Review]});
+  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
+}));
 
 router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req, res) => {
 
@@ -205,12 +219,6 @@ router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req,
   res.render('my-cats', {Title: 'My Cats', cats})
 }))
 
-router.post('/demouser', asyncHandler(async(req, res) => {
-  const username = demoUser;
-  const demouser = await User.findOne({ where: { username } })
-  loginUser(req, res, demouser);
-  res.redirect(`/users/${demouser.id}/cats`);
-}));
 
 
 router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res, next) => {
