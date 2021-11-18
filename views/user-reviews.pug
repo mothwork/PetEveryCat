@@ -21,5 +21,7 @@ block content
                     td= review.rating
                     td= review.content
                     td
-                        a(href=`/reviews/${review.id}/edit` role='button') Edit
-                        button(class="delete" id=review.id) Delete
+                        if thisUser
+                          a(href=`/reviews/${review.id}/edit`)
+                             button(class="edit" id=review.id) Edit
+                          button(class="delete" id=review.id) Delete

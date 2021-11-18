@@ -14,11 +14,16 @@ const catListNotFound = catListId => {
 };
 
 
-const userNotFound = catListId => {
-  const error = new Error(`Cat List with ID ${catListId} could not be found`);
-  error.title = "Cat List not found.";
+const userNotFound = userId => {
+  const error = new Error(`User with ID ${userId} could not be found`);
+  error.title = "User not found.";
   error.status = 404;
   return error;
 };
 
-module.exports = {csrfProtection, asyncHandler, catListNotFound }
+module.exports = {
+  csrfProtection, 
+  asyncHandler, 
+  catListNotFound,
+  userNotFound
+ }
