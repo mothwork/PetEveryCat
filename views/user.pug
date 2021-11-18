@@ -1,0 +1,42 @@
+extends layout.pug
+
+block content
+    .userContainer
+         ul
+            li= `Username: ${user.username}`
+            li= `Name: ${user.firstName} ${user.lastName}`
+            li= `Bio: ${user.bio}`
+            //- each cat in user.Cats
+            //-     li
+            //-         a(href= `/cats/${cat.id}`)
+            //-             p= `${cat.name}`
+            //-             img(src= cat.imgUrl style= "max-width: 200px")
+            table
+                thead
+                  tr
+                    th Name
+                    th Picture
+                    th Average Rating
+                    th My Rating
+                    th Review
+                tbody
+                  each cat in user.Cats
+                    tr
+                      td
+                        a(href=`/cats/${cat.id}`)= cat.name
+                      td
+                        img(src=cat.imgUrl, alt="", style="max-width: 150px")
+                        //- img(src= cat.imgUrl)
+                      td
+
+                      each review in user.Reviews
+                        if review.userId === user.id && review.catId === cat.id
+                            td
+                                p= review.rating
+                            td
+                                p Review: #{review.content}
+                                a(href=`/cats/edit/${cat.id}`)
+                                    button(class="edit" id=cat.id) Edit
+                                a(href=`/cats/${cat.id}`)
+                                    button(class="delete" id=cat.id) Delete
+
