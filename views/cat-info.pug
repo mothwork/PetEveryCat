@@ -2,7 +2,19 @@ extends layout.pug
 
 block content
     .cat
+        div
+            figure
+                img(src=`${cat.imgUrl}`, alt="")
         h1= cat.name
+        form(action=`/cats/${cat.id}/addToCatList`, method="post")
+            //- add csrf
+            select(name="catList")
+
+                option(value="Want to Pet") Want to Pet
+                option(value="Currently Petting") Currently Petting
+                option(value="Pet") Pet
+                option(value='' selected) 
+            button Add to Cat List
         ul
             li= cat.breed
             li= cat.coat

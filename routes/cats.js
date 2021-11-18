@@ -1,7 +1,7 @@
 const express = require('express')
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { Cat, User, CatsInList, Review } = db
+const { Cat, User, CatsInList, Review, CatList } = db
 const { restoreUser, requireAuth, checkPermissions } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
@@ -127,5 +127,54 @@ router.delete('/:id(\\d+)', requireAuth, async(req, res) => {
 
     res.json({message: 'successful'})
 })
+
+router.post(`/:id/addToCatList`, restoreUser, requireAuth, asyncHandler( async (req, res) => {
+    //TODO add csrf protection to individual cat route
+    //get the user id
+    const catId = req.params.id
+    const userId = res.locals.user.id
+    const lists = await CatList.findAll({where: {userId}})
+
+    const {
+        catList
+    } = req.body
+
+    let catListId
+    for (let i = 0; i < lists.length; i++) {
+        const list = lists[i];
+        if (list.name === catList){
+            catListId = list.id
+        }
+    }
+
+    let toDeleteArr = []
+    for (let i = 0; i < lists.length; i++) {
+        const list = lists[i];
+        if (list.id !== catListId) {
+            toDeleteArr.push(list.id)
+        }
+    }
+    //First we want to destroy any lists the cat is in?
+    for (let i = 0; i < toDeleteArr.length; i++) {
+        let id = toDeleteArr[i]
+        await CatsInList.destroy({where:{
+            catId: catId,
+            catListId: id
+        }})
+    }
+    
+    await CatsInList.create({
+        catListId,
+        catId,
+    })
+
+    //await newCatInList.save()
+    res.redirect('/catlists')
+
+    //get the cat list associated with that id from the request
+
+    //add the cat to the list they chose
+    //check the other two lists, and remove the cat if it is found on those lists
+}))
 
 module.exports = router

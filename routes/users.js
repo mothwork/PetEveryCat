@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
 const { User, Cat, CatList } = db
-const { loginUser, logOutUser, restoreUser, } = require('../auth');
+const { loginUser, logOutUser, restoreUser, checkPermissions, requireAuth } = require('../auth');
 const { demoUser } = require('../config/index');
 
 
@@ -136,8 +136,15 @@ router.post('/log-out', (req, res) => {
   res.redirect('/')
 })
 
-router.get('/:id(\\d+)/cats', restoreUser, asyncHandler(async (req, res) => {
-  const userId = req.params.id
+router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req, res) => {
+
+  const userId = res.locals.user.id
+  console.log(res.locals.user.id, "LOCALS")
+
+  if (parseInt(req.params.id, 10) !== userId) {
+    console.log(userId)
+    return res.redirect(`/`)
+  }
   const cats = await Cat.findAll({where: {userId}})
   res.render('my-cats', {Title: 'My Cats', cats})
 }))
