@@ -7,7 +7,6 @@ block content
                 img(src=`${cat.imgUrl}`, alt="")
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
-            //- add csrf
             input(type="hidden" name="_csrf" value=csrfToken)
             select(name="catList")
                 option(value="Want to Pet") Want to Pet
@@ -15,6 +14,12 @@ block content
                 option(value="Pet") Pet
                 option(value=`${catListVal}` selected)= `In list: ${catListId}`
             button Update Pet Status
+        form(action=`/cats/${cat.id}/addToCustomList`, method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            select(name="catListId")
+                each list in notDefaultList
+                    option(value=list.id)= list.name
+            button Add to Cat List
         ul
             li= cat.breed
             li= cat.coat
@@ -22,4 +27,13 @@ block content
             li= cat.friendly
         a(href=`/users/${cat.userId}`) My Creator
         a(href=`/cats/${cat.id}/reviews/new`) Add Review
-
+        each review in reviews
+            .review-container
+                .review-heading
+                    ul
+                        li
+                            a(href=`/users/${review.User.id}`)= review.User.firstName+' '+review.User.lastName
+                        li
+                            p= review.rating
+                        li
+                            p= review.content
