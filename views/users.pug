@@ -1,0 +1,7 @@
+extends layout.pug
+
+block content
+    .usersContainer
+        each user in users
+            .userContainer
+                a(href=`/users/${user.id}`)= user.username

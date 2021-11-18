@@ -10,9 +10,16 @@ const { demoUser } = require('../config/index');
 
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', asyncHandler(async (req, res, next) => {
+  const users = await User.findAll();
+  res.render('users', {title: 'Pet Every Cat Users', users});
+}));
+
+router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
+  const userId = req.params.id;
+  const user = await User.findByPk(userId, {include: [Cat, Review]});
+  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
+}));
 
 router.get('/sign-up', csrfProtection, asyncHandler(async (req, res) => {
   const user = await User.build() // Does this need an await?

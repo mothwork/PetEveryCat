@@ -4,7 +4,15 @@ const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
 const { User, CatList, Cat, Review } = db
 
+router.post('/', asyncHandler(async (req, res) => {
+  const { rating, content, catId } = req.body
+  const userId = req.session.auth.userId;
 
+  if (rating && content) {
+    const review = await Review.create({ rating, content, userId, catId });
+    res.json(review);
+  }
+}));
 
 router.delete('/:id(\\d+)', asyncHandler(async (req, res) => {
   console.log('Im in!');
