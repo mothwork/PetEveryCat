@@ -6,16 +6,16 @@ block content
             li= `Username: ${user.username}`
             li= `Name: ${user.firstName} ${user.lastName}`
             li= `Bio: ${user.bio}`
-            //- each cat in user.Cats
-            //-     li
-            //-         a(href= `/cats/${cat.id}`)
-            //-             p= `${cat.name}`
-            //-             img(src= cat.imgUrl style= "max-width: 200px")
+            if user.id === currentUser
+              a(href=`/users/${user.id}/edit`)
+                button(class='edit') Edit Profile
             table
                 thead
                   tr
                     th Name
                     th Picture
+                    th My Rating
+                    th My Review
                 tbody
                   each cat in user.Cats
                     tr
@@ -23,21 +23,11 @@ block content
                         a(href=`/cats/${cat.id}`)= cat.name
                       td
                         img(src=cat.imgUrl, alt="", style="max-width: 150px")
-                        //- img(src= cat.imgUrl)
-                      //- td
-
-                      //- each review in user.Reviews
-                      //-   if review.catId === cat.id
-                      //-     .reviewContainer
-                      //-       td
-                      //-           p= review.rating
-                      //-       td
-                      //-           p= review.content
-                      //-             button(class="edit" id=`${review.id}-${review.userId}-edit`) Edit
-                      //-             button(class="delete" id=`${review.id}-${review.userId}-delete`) Delete
-                      //-   else 
-                      //-     td 
-                      //-       button(class="create" id=`${csrfToken}-${cat.id}`) Create
+                      each review in user.Reviews
+                        if review.catId === cat.id
+                          .reviewContainer
+                            td
+                                p= review.rating
+                            td
+                                p= review.content
     script(src="/javascripts/userReviews.js" type="module")
-
-

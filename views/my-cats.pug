@@ -20,11 +20,13 @@ block content
         tbody
             each cat in cats
                 tr(class=`cat-${cat.id}`)
-                    //- td= img(src=`${cat.imgUrl}`, alt="")
+                    td
+                        img(src=`${cat.imgUrl}` style= "max-width: 200px")
                     td
                         a(href=`/cats/${cat.id}`)= cat.name
-                    td= cat.dateCreated
-                    td= cat.dataUpdated
+                    td= cat.createdAt.toDateString()
+                    td= cat.updatedAt.toDateString()
                     td
-                        a(href=`/cats/edit/${cat.id}` role='button') Edit
+                        a(href=`/cats/edit/${cat.id}`)
+                            button(class='edit') Edit
                         button(class="delete" id=cat.id) Delete

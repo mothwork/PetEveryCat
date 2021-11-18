@@ -17,9 +17,58 @@ router.get('/', asyncHandler(async (req, res, next) => {
 
 router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
   const userId = req.params.id;
+  const currentUser = res.locals.user.id
   const user = await User.findByPk(userId, {include: [Cat, Review]});
-  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
+  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken(), currentUser});
 }));
+
+router.get('/:id(\\d+)/edit', csrfProtection, asyncHandler(async(req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  if (userId === res.locals.user.id) {
+    const user = await User.findByPk(userId, {include: [Cat, Review]});
+    res.render('user-edit', {title: 'Edit User Page', user, csrfToken: req.csrfToken()});
+  } else {
+    res.redirect(`/users/${res.locals.user.id}`);
+  }
+}));
+
+const editUserValidators = [
+  check('firstName')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a value for First Name')
+    .isLength({ max: 50 })
+    .withMessage('First Name must not be longer than 50 characters'),
+  check('lastName')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a value for Last Name')
+    .isLength({ max: 50 })
+    .withMessage('Last Name must not be longer than 50 characters'),
+    check('bio')
+    .exists({ checkFalsy: true })
+    .withMessage('You MUST provide a bio')
+]
+
+
+router.post('/:id(\\d+)/edit', editUserValidators, csrfProtection, asyncHandler(async(req, res) => {
+  console.log(req.body)
+  const { firstName, lastName, bio } = req.body
+  const userId = parseInt(req.params.id, 10);
+  if (userId === res.locals.user.id) {
+    const user = await User.findByPk(userId);
+    const validatorErrors = validationResult(req);
+    if(validatorErrors.isEmpty()) {
+      const updatedUser = await user.update({
+        firstName, lastName, bio
+      });
+      res.redirect(`/users/${user.id}`);
+    } else {
+      const errors = validatorErrors.array().map(e => e.msg)
+      res.render('user-edit', {title: 'Edit User Page', user, csrfToken: req.csrfToken(), errors});
+    }
+  } else {
+    res.redirect(`/users/${res.locals.user.id}`);
+  }
+}))
 
 router.get('/sign-up', csrfProtection, asyncHandler(async (req, res) => {
   const user = await User.build() // Does this need an await?
@@ -88,7 +137,7 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
     await CatList.create({userId: user.id, name: "Currently Petting", canDelete: false});
     // TO DO: log in user
     loginUser(req, res, user);
-    return res.redirect('/');
+    return res.redirect(`/users/${user.id}`);
   }
   const errors = validatorErrors.array().map(e => e.msg);
   res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken(), errors });
@@ -124,7 +173,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
       if (isPassword) {
         //TODO Log user in
         loginUser(req, res, user);
-        return res.redirect('/')
+        return res.redirect(`/${user.id}/cats`)
       }
     }
     errors.push('Invalid username or password')
@@ -160,7 +209,7 @@ router.post('/demouser', asyncHandler(async(req, res) => {
   const username = demoUser;
   const demouser = await User.findOne({ where: { username } })
   loginUser(req, res, demouser);
-  res.redirect('/');
+  res.redirect(`/users/${demouser.id}/cats`);
 }));
 
 
