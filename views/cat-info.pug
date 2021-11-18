@@ -22,4 +22,13 @@ block content
             li= cat.friendly
         a(href=`/users/${cat.userId}`) My Creator
         a(href=`/cats/${cat.id}/reviews/new`) Add Review
-
+        each review in reviews
+            .review-container
+                .review-heading
+                    ul
+                        li
+                            a(href=`/users/${review.User.id}`)= review.User.firstName+' '+review.User.lastName
+                        li
+                            p= review.rating
+                        li
+                            p= review.content

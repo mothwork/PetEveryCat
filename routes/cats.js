@@ -32,6 +32,8 @@ router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, r
     const cat = await Cat.findOne({where: {id}}, {include: {User}})
     const lists = await CatList.findAll({where: {userId}})
     const listsCatIsIn = await CatsInList.findAll({where: {catId}, })
+    
+    const reviews = await Review.findAll({include:User, where:{catId}})
 
     let catListId
     let catListVal
@@ -54,7 +56,7 @@ router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, r
     }
 
 
-    res.render("cat-info", {Title: `${cat.name}`, cat, catListId, catListVal, csrfToken: req.csrfToken()}) //Does this work?
+    res.render("cat-info", {Title: `${cat.name}`, cat, catListId, catListVal, reviews, csrfToken: req.csrfToken()}) //Does this work?
 }))
 
 
