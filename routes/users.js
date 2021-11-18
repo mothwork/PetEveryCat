@@ -152,9 +152,20 @@ router.post('/demouser', asyncHandler(async(req, res) => {
 
 router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res) => {
   const userId = req.params.id;
+  let title;
+  if (userId == req.session.auth.userId) {
+    title = 'My Reviews';
+  } else {
+    const user = await User.findByPk(userId);
+    if (user) {
+      title = `${user.username}'s Reviews`
+    } else {
+      next()
+    }
+  }
 
   const reviews = await Review.findAll({ include: Cat, where: { userId }});
-  res.render('my-reviews', { title: 'My Reviews', reviews });
+  res.render('my-reviews', { title, reviews });
 }));
 
 module.exports = router;

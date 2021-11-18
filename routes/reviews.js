@@ -45,7 +45,8 @@ router.post('/:id(\\d+)/edit', reviewValidators, csrfProtection, asyncHandler(as
         const errors = validatorErrors.array().map(error => error.msg);
         res.render('edit-review', { title: "Edit Review", errors, review, csrfToken: req.csrfToken() })
     }
-    
 }))
+
+
 
 module.exports = router

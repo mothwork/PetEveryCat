@@ -4,11 +4,13 @@ const { csrfProtection, asyncHandler } = require('../utils');
 const db = require('../db/models');
 const { requireAuth } = require('../auth');
 const { User, CatList, Cat, Review } = db
+const { catListNotFound } = require('../utils')
 
 router.get('/', requireAuth, asyncHandler(async(req, res) => {
     const catLists = await CatList.findAll({ where: { userId: req.session.auth.userId }, include: Cat })
     res.render('cat-lists', { title: "My Cat Lists", catLists });
 }));
+
 
 router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
     const catListId = req.params.id;
