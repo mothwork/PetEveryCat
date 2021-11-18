@@ -15,11 +15,13 @@ router.get('/', asyncHandler(async (req, res, next) => {
   res.render('users', {title: 'Pet Every Cat Users', users});
 }));
 
-router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
-  const userId = req.params.id;
-  const user = await User.findByPk(userId, {include: [Cat, Review]});
-  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
+router.post('/demouser', asyncHandler(async(req, res) => {
+  const username = demoUser;
+  const demouser = await User.findOne({ where: { username } })
+  loginUser(req, res, demouser);
+  res.redirect('/');
 }));
+
 
 router.get('/sign-up', csrfProtection, asyncHandler(async (req, res) => {
   const user = await User.build() // Does this need an await?
@@ -137,11 +139,18 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
 }))
 
+router.use(requireAuth)
 
 router.post('/log-out', (req, res) => {
   logOutUser(req, res);
   res.redirect('/')
 })
+
+router.get('/:id(\\d+)',  csrfProtection, asyncHandler(async(req, res) => {
+  const userId = req.params.id;
+  const user = await User.findByPk(userId, {include: [Cat, Review]});
+  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
+}));
 
 router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req, res) => {
 
@@ -156,12 +165,7 @@ router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req,
   res.render('my-cats', {Title: 'My Cats', cats})
 }))
 
-router.post('/demouser', asyncHandler(async(req, res) => {
-  const username = demoUser;
-  const demouser = await User.findOne({ where: { username } })
-  loginUser(req, res, demouser);
-  res.redirect('/');
-}));
+
 
 
 router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res, next) => {

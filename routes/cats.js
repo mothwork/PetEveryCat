@@ -14,7 +14,7 @@ const router = express.Router()
 
 
 
-router.get('/', restoreUser, asyncHandler(async (req, res) => {
+router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
         res.render('cats', { Title: 'Cats', cats })
@@ -25,7 +25,7 @@ router.get('/', restoreUser, asyncHandler(async (req, res) => {
 
 }))
 
-router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, res) => {
+router.get('/:id(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
     const id = req.params.id
     const catId = id
     const userId = res.locals.user.id

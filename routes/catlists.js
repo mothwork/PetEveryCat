@@ -51,7 +51,7 @@ router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
 //   }
 // }));
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAuth, asyncHandler(async (req, res) => {
   const { name } = req.body;
   const userId = req.session.auth.userId;
 
