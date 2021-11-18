@@ -31,9 +31,28 @@ router.get('/:id(\\d+)', csrfProtection, restoreUser, asyncHandler(async (req, r
     const userId = res.locals.user.id
     const cat = await Cat.findOne({ where: { id } }, { include: { User } })
     const lists = await CatList.findAll({ where: { userId } })
-    const listsCatIsIn = await CatsInList.findAll({ where: { catId }, })
+    const listsCatIsIn = await CatsInList.findAll({ where: { catId }, })    //
 
-    const notDefaultList = lists.filter(list => list.canDelete === true);
+
+    // const notDefaultList = lists.filter(async list => {
+    //     const catInList = await CatsInList.findOne({where:{catId, catListId:list.id}})
+    //     //console.log(catInList)
+    //     console.log(list.canDelete)
+    //     console.log(catInList)
+    //     console.log(list.canDelete === true && !catInList)
+    //     return list.canDelete === true && catInList !== null
+    // });
+
+    const notDefaultList = []
+    lists.forEach(async (list)=>{
+        const catInList = await CatsInList.findOne({where:{catId, catListId:list.id}})
+        console.log(catInList)
+        if (list.canDelete === true && catInList === null) {
+            notDefaultList.push(list)
+        }
+    })
+
+    console.log(notDefaultList)
 
     const reviews = await Review.findAll({ include: User, where: { catId } })
 
@@ -155,7 +174,7 @@ router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
     res.json({ message: 'successful' })
 })
 
-router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => { 
+router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
     const { catListId } = req.body;
     const catId = req.params.id;
     const catList = await CatList.findByPk(catListId);
@@ -201,7 +220,7 @@ router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth,
             }
         }
     }
-    
+
     for (let i = 0; i < toDeleteArr.length; i++) {
         let id = toDeleteArr[i]
         await CatsInList.destroy({
