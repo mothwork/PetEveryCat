@@ -4,9 +4,11 @@ const loginUser = (req, res, user) => {
   req.session.auth = {
     userId: user.id
   };
+  req.session.save(() => {res.redirect(`/users/${user.id}/cats`)})
 };
 
 const restoreUser = async (req, res, next) => {
+  console.log(req.session.auth)
   if (req.session.auth) {
     const { userId } = req.session.auth;
     try {
@@ -26,8 +28,10 @@ const restoreUser = async (req, res, next) => {
   }
 };
 
-const logOutUser = (req, res) => {
+const logOutUser = async (req, res) => {
+  //await req.session.destroy()
   delete req.session.auth
+  req.session.save(() => {res.redirect('/')})
 }
 
 const requireAuth = (req, res, next) => {
