@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { csrfProtection, asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { User, CatList, Cat, Review } = db
+const { User, CatList, Cat, Review, CatsInList } = db
 
 router.get('/', asyncHandler(async (req, res) => {
     const catLists = await CatList.findAll({ order: [['updatedAt']], where: { userId: req.session.auth.userId }, include: Cat })
@@ -20,6 +20,9 @@ router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   const id = req.params.id;
   const catList = await CatList.findByPk(id);
   if (catList && catList.canDelete) {
+    console.log('HI!!!!!!!');
+    const catInList = await CatsInList.findOne({ where: { catListId: catList.id } });
+    await catInList.destroy();
     await catList.destroy();
     res.status = 204;
     return res.end();

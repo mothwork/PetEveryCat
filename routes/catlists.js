@@ -3,7 +3,7 @@ const router = express.Router();
 const { csrfProtection, asyncHandler } = require('../utils');
 const db = require('../db/models');
 const { requireAuth } = require('../auth');
-const { User, CatList, Cat, Review } = db
+const { User, CatList, Cat, Review, CatsInList } = db
 const { catListNotFound } = require('../utils')
 
 router.get('/', requireAuth, asyncHandler(async(req, res) => {
@@ -30,17 +30,26 @@ router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
     }
 }));
 
-router.delete('/:id(\\d+)', requireAuth, asyncHandler(async(req, res, next) => {
-  const id = req.params.id;
-  const catList = await CatList.findByPk(id);
-  if (catList && catList.canDelete) {
-    await catList.destroy();
-    res.status = 204;
-    return res.end();
-  } else {
-    return next(catListNotFound(req.params.id));
-  }
-}));
+// router.delete('/:id(\\d+)', requireAuth, asyncHandler(async(req, res, next) => {
+//   const catId = req.params.id;
+//   const catList = await CatList.findByPk(id);
+//   const catsInList = CatsInList.findOne( { where: { catListId: catList.id }});
+//   console.log("HI");
+//   console.log(catsInList);
+//   if (catList && catList.canDelete) {
+//     try {
+//       await CatsInList.destroy({ where: { catListId: catList.id } });
+//       await catList.destroy();
+//     } catch (e) {
+//       console.log(e);
+//       next(e);
+//     }
+//     res.status = 204;
+//     return res.end();
+//   } else {
+//     return next(catListNotFound(req.params.id));
+//   }
+// }));
 
 router.post('/', asyncHandler(async (req, res) => {
   const { name } = req.body;

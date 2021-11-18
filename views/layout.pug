@@ -11,6 +11,8 @@ html
         a(href=`/users/${user.id}/cats`) My Cats
         a(href='/cats') Cats
         a(href='/catlists') Cat Lists
+        a(href=`/users/${user.id}/reviews`) My Reviews
+
         form(action='/users/log-out' method="post")
           button(type="submit") Log Out
       else
