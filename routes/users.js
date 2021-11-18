@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { csrfProtection, asyncHandler } = require('../utils')
+const { csrfProtection, asyncHandler, userNotFound } = require('../utils')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
 const db = require('../db/models')
-const { User, Cat, CatList } = db
+const { User, Cat, CatList, Review } = db
 const { loginUser, logOutUser, restoreUser, } = require('../auth');
 const { demoUser } = require('../config/index');
 
@@ -147,6 +147,27 @@ router.post('/demouser', asyncHandler(async(req, res) => {
   const demouser = await User.findOne({ where: { username } })
   loginUser(req, res, demouser);
   res.redirect('/');
-}))
+}));
+
+
+router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res, next) => {
+  const userId = req.params.id;
+  let title;
+  let thisUser;
+  if (userId == req.session.auth.userId) {
+    title = 'My Reviews';
+    thisUser = true;
+  } else {
+    const user = await User.findByPk(userId);
+    if (user) {
+      title = `${user.username}'s Reviews`
+      thisUser = false;
+    } else {
+      return next(userNotFound(userId));
+    }
+  }
+  const reviews = await Review.findAll({ include: Cat, where: { userId }});
+  res.render('user-reviews', { title, reviews, thisUser });
+}));
 
 module.exports = router;
