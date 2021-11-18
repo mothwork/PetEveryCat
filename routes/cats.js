@@ -5,7 +5,6 @@ const { Cat, User, CatsInList, Review, CatList } = db
 const { restoreUser, requireAuth, checkPermissions } = require("../auth")
 const { check, validationResult } = require('express-validator')
 const e = require('express')
-const review = require('../db/models/review')
 
 const router = express.Router()
 
@@ -195,5 +194,45 @@ router.post(`/:id/addToCatList`, csrfProtection, restoreUser, requireAuth, async
     res.redirect(`/cats/${catId}`)
 
 }))
+router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
+
+    const catId = req.params.id;
+    const userId = req.session.auth.userId;
+    const review = await Review.findOne({ where: { userId, catId } });
+    if (!review) {
+        const review = await Review.build();
+        res.render('review-new', { title: "Create New Review", review, catId, csrfToken: req.csrfToken() });
+    } else {
+        res.redirect(`/reviews/${review.id}/edit`);
+    }
+}));
+
+const reviewValidators = [
+    check("rating")
+      .exists({ checkFalsy: true })
+      .withMessage("Please provide a rating")
+      .custom(value => {
+          if (value > 5 || value < 1) {
+              throw new Error("Rating must be between 1 and 5")
+          }
+          else return true
+      }),
+    check("content")
+      .exists({ checkFalsy: true })
+      .withMessage("Please provide a review")
+];
+
+router.post('/:id(\\d+)/reviews/new', requireAuth, reviewValidators, csrfProtection, asyncHandler(async (req, res) => {
+    const validatorErrors = validationResult(req);
+    const { rating, content } = req.body;
+
+    if (validatorErrors.isEmpty()) {
+        const review = await Review.create({rating, content, catId: req.params.id, userId: req.session.auth.userId });
+        res.redirect(`/cats/${req.params.id}`);
+    } else {
+        const errors = validatorErrors.array().map(err => err.msg);
+        res.render('review-new', { title: "Create New Review", review: { rating , content }, errors, csrfToken: req.csrfToken() });
+    }
+}));
 
 module.exports = router
