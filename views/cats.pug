@@ -3,8 +3,13 @@ extends layout.pug
 block content
     .catsContainer
         each cat in cats
-          .catbox
-            p= cat.name
-            a(href=`/cats/${cat.id}`)
-              .catContainer
-                img(src=`${cat.imgUrl}`, alt="")
+          a(href=`/cats/${cat.id}`)
+            .catbox
+              p= cat.name
+
+                if cat.imgUrl
+                  .catContainer(style=`background-image: url(${cat.imgUrl})`)
+                else
+                  .catContainer(style=`background-image: url('favicon.ico')`)
+                  //- .catImg(style=`background-image: url(${cat.imgUrl})`)
+                  //- img(src=`${cat.imgUrl}`, alt="" style)

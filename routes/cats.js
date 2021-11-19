@@ -11,7 +11,7 @@ const router = express.Router()
 router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
-        res.render('cats', { Title: 'Cats', cats })
+        res.render('cats', { title: 'Cats', cats })
     } catch (error) {
         res.send(error)
     }
@@ -55,7 +55,7 @@ router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler
     const catId = req.params.id;
     // console.log(previousDefaultId);
     // const listToAddTo = CatList.findByPk(catListId);
-    
+
     if (previousDefaultId) {
         const removeFromList = await CatsInList.findOne({ where: { catListId: previousDefaultId, catId } })
         if (removeFromList) {
