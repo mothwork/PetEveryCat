@@ -9,8 +9,9 @@ block content
             if user.id === currentUser
               a(href=`/users/${user.id}/edit`)
                 button(class='edit') Edit Profile
+            .catsTable
             table
-                thead
+                thead= `${user.username}'s Cats`
                   tr
                     th Name
                     th Picture
