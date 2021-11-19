@@ -5,28 +5,31 @@ append head
   script(src="/javascripts/mycats.js" type="module" defer)
 block content
     append nav
-        form(action='/cats/new' method='get')
-            button Add Cat
     h1 My Cats
-    table
-        thead
-            tr
-                th
-                th Cat Name
-                th Date Created
-                th Date Edited
-                th Options
-                th
-        tbody
-            each cat in cats
-                tr(class=`cat-${cat.id}`)
+    form(action='/cats/new' method='get')
+        button Add Cat
+    .tableContainer
+        table
+           thead
+               tr
+                   th
+                   th Cat Name
+                   th Date Created
+                   th Date Edited
+                   th Options
+                   th
+           tbody
+               each cat in cats
+                   tr(class=`cat-${cat.id} catrow`)
                     td
-                        img(src=`${cat.imgUrl}`, alt="")
-                    td
-                        a(href=`/cats/${cat.id}`)= cat.name
-                    td= cat.createdAt.getMonth()+"/"+cat.createdAt.getDate()+"/"+cat.createdAt.getFullYear()+" "+cat.createdAt.getHours()+":"+cat.createdAt.getMinutes()
-                    td= cat.updatedAt.getMonth()+"/"+cat.updatedAt.getDate()+"/"+cat.updatedAt.getFullYear()+" "+cat.updatedAt.getHours()+":"+cat.updatedAt.getMinutes()
-                    td
-                        a(href=`/cats/edit/${cat.id}`)
-                            button(class='edit') Edit
-                        button(class="delete" id=cat.id) Delete
+                          a(href=`/cats/${cat.id}`)
+                            img(src=`${cat.imgUrl}`, alt="")
+                    td= cat.name
+                       td= cat.createdAt.getMonth()+"/"+cat.createdAt.getDate()+"/"+cat.createdAt.getFullYear()+" "+cat.createdAt.getHours()+":"+cat.createdAt.getMinutes()
+                       td= cat.updatedAt.getMonth()+"/"+cat.updatedAt.getDate()+"/"+cat.updatedAt.getFullYear()+" "+cat.updatedAt.getHours()+":"+cat.updatedAt.getMinutes()
+                       td
+                           a(href=`/cats/edit/${cat.id}`)
+                               button(class='edit') Edit
+                           button(class="delete" id=cat.id) Delete
+    form(action='/cats/new' method='get')
+        button Add Cat
