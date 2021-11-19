@@ -1,24 +1,24 @@
-extends layout.pug 
+extends layout.pug
 
-block content 
-    table 
-      thead 
-        tr 
-          th Name 
-          th Picture 
-          th Average Rating
-          th My Rating 
+block content
+    table
+      thead
+        tr
+          th Name
+          th Picture
+          //-th Average Rating
+          th My Rating
           th Review
-      tbody 
+      tbody
         each cat in catList.Cats
-          tr 
+          tr
             td
               a(href=`/cats/${cat.id}`)= cat.name
             td
               img(src=cat.imgUrl, alt="", style="max-width: 150px")
               //- img(src= cat.imgUrl)
-            td
-              
+            
+
             each review in cat.Reviews
               if review.userId === userId
                 td
@@ -26,4 +26,3 @@ block content
 
                 td
                   p= review.content
-          
