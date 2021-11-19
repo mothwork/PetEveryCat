@@ -192,56 +192,24 @@ router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAu
 
 
 router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
-    //TODO add csrf protection to individual cat route
+    const id = req.params.id;
+    const { catListName } = req.body;
+    console.log(catListName);
+    const listToAddTo = await CatList.findOne({ where: { name: catListName } });
+    const catToAdd = await Cat.findByPk(id);
 
-    const catId = req.params.id
-    const userId = res.locals.user.id
-    //All users lists
-    const lists = await CatList.findAll({ where: { userId } })
-
-    const {
-        catList
-    } = req.body
-
-    //Finding the list the user the selected
-    let catListId
-    for (let i = 0; i < lists.length; i++) {
-        const list = lists[i];
-        if (list.name === catList) {
-            catListId = list.id
+    if (listToAddTo.canDelete) {
+        await CatsInList.create({catId: catToAdd.id, catListId: listToAddTo.id});
+    } else {
+        const listCatIsIn = await CatsInList.findOne({ where: {catId: catToAdd.id } });
+        if (listCatIsIn) {
+            await listCatIsIn.destroy();
         }
+        await CatsInList.create({catId: catToAdd.id, catListId: listToAddTo.id});
     }
-    //Finds the lists that the cat is in
-    let toDeleteArr = []
-    const selectedList = await CatList.findByPk(catListId)
-    if (!selectedList.canDelete) {
+    res.redirect(`/cats/${id}`);
+}));
 
-        for (let i = 0; i < lists.length; i++) {
-            const list = lists[i];
-            if (list.id !== catListId && !list.canDelete) {
-                toDeleteArr.push(list.id)
-            }
-        }
-    }
-
-    for (let i = 0; i < toDeleteArr.length; i++) {
-        let id = toDeleteArr[i]
-        await CatsInList.destroy({
-            where: {
-                catId: catId,
-                catListId: id
-            }
-        })
-    }
-
-    await CatsInList.create({
-        catListId,
-        catId,
-    })
-
-    res.redirect(`/cats/${catId}`)
-
-}))
 router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
 
     const catId = req.params.id;

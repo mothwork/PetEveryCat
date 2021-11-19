@@ -8,17 +8,17 @@ block content
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
-            select(name="catList")
+            select(name="catListName")
                 option(value="Want to Pet") Want to Pet
                 option(value="Currently Petting") Currently Petting
                 option(value="Pet") Pet
                 option(value=`${catListVal}` selected)= `In list: ${catListId}`
             button Update Pet Status
-        form(action=`/cats/${cat.id}/addToCustomList`, method="post")
+        form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
-            select(name="catListId")
+            select(name="catListName")
                 each list in notDefaultList
-                    option(value=list.id)= list.name
+                    option(value=list.name)= list.name
             button Add to Cat List
         ul
             li= cat.breed
