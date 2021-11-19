@@ -181,6 +181,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
         //TODO Log user in
         loginUser(req, res, user);
         req.session.save(() => res.redirect(`/${user.id}/cats`))
+        return
         //return res.redirect(`/${user.id}/cats`)
       }
     }
