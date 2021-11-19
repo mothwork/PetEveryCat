@@ -21,9 +21,9 @@ router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
 router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
     const { catId } = req.params;
     const { userId } = req.session.auth;
-    const reviews = await Review.findAll({ where: {catId} });
+    const reviews = await Review.findAll({ include: User, where: {catId} });
     const userLists = await CatList.findAll({ include: User, order: ['id'], where: { userId } })
-    const cat = await Cat.findByPk(catId);
+    console.log(reviews);    const cat = await Cat.findByPk(catId);
     const catsInLists = await CatsInList.findAll({ where: {catId} });
     // console.log(catsInLists);
     const catsInListsIds = catsInLists.map(join => join.catListId);
@@ -44,7 +44,6 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
     if (!currentDefaultList) {
         currentDefaultList = defaultLists[1];
     }
-    console.log(currentDefaultList);
 
     const freeUserLists = userLists.filter(list => (!catsInListsIds.includes(list.id)));
 
