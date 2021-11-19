@@ -87,3 +87,31 @@ footer {
     width: 100%;
     background-color: #B3884D;
 }
+
+.catContainer {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.catContainer img {
+    height: 100%;
+    width: 100%;
+    /* object-position: center; */
+}
+
+.catsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.catbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid black; */
+}

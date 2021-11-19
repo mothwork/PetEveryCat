@@ -15,7 +15,7 @@ block content
             td
               a(href=`/cats/${cat.id}`)= cat.name
             td
-              img(src=cat.imgUrl, alt="", style="max-width: 150px")
+              img(src=cat.imgUrl, alt="")
               //- img(src= cat.imgUrl)
             if cat.Reviews.length
               td= (cat.Reviews.reduce((accum, currentReview) => accum + parseInt(currentReview.rating), 0) / cat.Reviews.length)

@@ -3,7 +3,8 @@ extends layout.pug
 block content
     .catsContainer
         each cat in cats
-            .catContainer
-            -// Not sure if this works
-                a(href=`/cats/${cat.id}`)= cat.name
-                  img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
+          .catbox
+            p= cat.name
+            a(href=`/cats/${cat.id}`)
+              .catContainer
+                img(src=`${cat.imgUrl}`, alt="")

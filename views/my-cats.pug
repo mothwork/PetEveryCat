@@ -20,9 +20,8 @@ block content
         tbody
             each cat in cats
                 tr(class=`cat-${cat.id}`)
-                    //img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
                     td
-                        img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
+                        img(src=`${cat.imgUrl}`, alt="")
                     td
                         a(href=`/cats/${cat.id}`)= cat.name
                     td= cat.createdAt.getMonth()+"/"+cat.createdAt.getDate()+"/"+cat.createdAt.getFullYear()+" "+cat.createdAt.getHours()+":"+cat.createdAt.getMinutes()

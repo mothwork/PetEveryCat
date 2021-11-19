@@ -25,7 +25,7 @@ block content
                       td
                         a(href=`/cats/${cat.id}`)= cat.name
                       td
-                        img(src=cat.imgUrl, alt="", style="max-width: 150px")
+                        img(src=cat.imgUrl, alt="")
                       each review in user.Reviews
                         if review.catId === cat.id
                           .reviewContainer

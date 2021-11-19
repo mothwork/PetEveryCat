@@ -17,7 +17,7 @@ block content
                 tr(id=`review-${review.id}`)
                     td
                       a(href=`/cats/${review.Cat.id}`) 
-                        img(src=`${review.Cat.imgUrl}`, alt="", style="max-width: 150px")
+                        img(src=`${review.Cat.imgUrl}`, alt="")
                     td 
                       a(href=`/cats/${review.Cat.id}`)= review.Cat.name
                     td= review.rating
