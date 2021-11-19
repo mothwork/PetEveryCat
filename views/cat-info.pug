@@ -2,42 +2,46 @@ extends layout.pug
 
 block content
     .cat
-        div
-            img(src=`${cat.imgUrl}`, alt="")
-        h1= cat.name
-        form(action=`/cats/${cat.id}/addToCatList`, method="post")
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden", name="previousDefaultId" value=currentDefaultList.id)
-            select(name="catListId")
-                each list in defaultLists
-                    if parseInt(list.id) == parseInt(currentDefaultList.id)
-                        option(value=parseInt(list.id) selected)= `In List - ${list.name}`
-                    else
-                        option(value=parseInt(list.id))= list.name
-            button Update Pet Status
-        form(action=`/cats/${cat.id}/addToCatList`, method="post")
-            input(type="hidden" name="_csrf" value=csrfToken)
-            if freeUserLists.length
-              select(name="catListId")
-                each list in freeUserLists
-                    option(value=list.id)= list.name
-              button Add to Cat List
-        ul
-            li Breed: #{cat.breed}
-            li Coat: #{cat.coat}
-            li Size: #{cat.size}
-            li Friendly: #{cat.friendly}
-        a(href=`/users/${cat.userId}`) My Creator
+        .cat-info
+            div
+                img(src=`${cat.imgUrl}`, alt="")
+            h1= cat.name
+            form(action=`/cats/${cat.id}/addToCatList`, method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden", name="previousDefaultId" value=currentDefaultList.id)
+                select(name="catListId")
+                    each list in defaultLists
+                        if parseInt(list.id) == parseInt(currentDefaultList.id)
+                            option(value=parseInt(list.id) selected)= `In List - ${list.name}`
+                        else
+                            option(value=parseInt(list.id))= list.name
+                button Update Pet Status
+            form(action=`/cats/${cat.id}/addToCatList`, method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                if freeUserLists.length
+                    select(name="catListId")
+                        each list in freeUserLists
+                            option(value=list.id)= list.name
+                    button Add to Cat List
+            ul
+                li Breed: #{cat.breed}
+                li Coat: #{cat.coat}
+                li Size: #{cat.size}
+                li Friendly: #{cat.friendly}
+                li My Creator:
+                    a(href=`/users/${cat.userId}`)= cat.User.username
+
+        h2 Reviews
         each review in reviews
             .review-container
                 .review-heading
                     ul
                         li
-                            a(href=`/users/${review.User.id}`)= review.User.firstName+' '+review.User.lastName
+                            a(href=`/users/${review.User.id}`)
+                                p=`Reviewed by: ${review.User.firstName+' '+review.User.lastName}`
                         li
                             p Rating: #{review.rating}
                         li
                             p Review: #{review.content}
         a(href=`/cats/${cat.id}/reviews/new`)
-          button Add Review
-
+            button Add Review

@@ -23,10 +23,11 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
     const { userId } = req.session.auth;
     const reviews = await Review.findAll({ include: User, where: {catId} });
     const userLists = await CatList.findAll({ include: User, order: ['id'], where: { userId } })
-    console.log(reviews);    const cat = await Cat.findByPk(catId);
+    const cat = await Cat.findOne({where:{id:catId}, include:User});
     const catsInLists = await CatsInList.findAll({ where: {catId} });
     // console.log(catsInLists);
     const catsInListsIds = catsInLists.map(join => join.catListId);
+
 
     const defaultLists = [];
     for (let i = 0; i < 3; i++) {
