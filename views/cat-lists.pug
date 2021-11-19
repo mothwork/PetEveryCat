@@ -3,8 +3,11 @@ extends layout.pug
 block content 
 
     script(src="/javascripts/catlists.js" type="module")
+    h2 My Cat Lists
     .catlist-container
-        .inner-wrapper
+    .form-container
+    .inner-wrapper
+        input(type="hidden" name="_csrf" value=csrfToken)
     //- each catList in catLists
     //-   div(id=`${catList.id}-catlist`)
     //-     a(href=`/catLists/${catList.id}`)= catList.name

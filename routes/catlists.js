@@ -6,9 +6,13 @@ const { requireAuth } = require('../auth');
 const { User, CatList, Cat, Review, CatsInList } = db
 const { catListNotFound } = require('../utils')
 
-router.get('/', requireAuth, asyncHandler(async(req, res) => {
-    const catLists = await CatList.findAll({ where: { userId: req.session.auth.userId }, include: Cat })
-    res.render('cat-lists', { title: "My Cat Lists", catLists });
+router.get('/', requireAuth, csrfProtection, asyncHandler(async(req, res) => {
+    const catLists = await CatList.findAll({
+        where: { userId: req.session.auth.userId },
+        order: [["id", "ASC"]],
+        include: Cat
+    })
+    res.render('cat-lists', { title: "My Cat Lists", catLists, csrfToken: req.csrfToken() });
 }));
 
 
@@ -20,7 +24,6 @@ router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
             include: Review
         }
     });
-
     // Question: Do we want to include average reviews in the list?
     if (!catList || catList.userId !== req.session.auth.userId) {
         return next(catListNotFound(req.params.id));
@@ -51,15 +54,15 @@ router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
 //   }
 // }));
 
-router.post('/', requireAuth, asyncHandler(async (req, res) => {
-  const { name } = req.body;
-  const userId = req.session.auth.userId;
+// router.post('/', requireAuth, asyncHandler(async (req, res) => {
+//   const { name } = req.body;
+//   const userId = req.session.auth.userId;
 
-  if (name) {
-    const newCatList = await CatList.create({ name, userId });
-    res.json(newCatList);
-  }
-}));
+//   if (name) {
+//     const newCatList = await CatList.create({ name, userId });
+//     res.json(newCatList);
+//   }
+// }));
 
 
 

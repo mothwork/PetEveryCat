@@ -8,23 +8,26 @@ block content
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
-            select(name="catList")
-                option(value="Want to Pet") Want to Pet
-                option(value="Currently Petting") Currently Petting
-                option(value="Pet") Pet
-                option(value=`${catListVal}` selected)= `In list: ${catListId}`
+            input(type="hidden", name="previousDefaultId" value=currentDefaultList.id)
+            select(name="catListId")
+                each list in defaultLists
+                    if parseInt(list.id) == parseInt(currentDefaultList.id)
+                        option(value=parseInt(list.id) selected)= `In List - ${list.name}`
+                    else
+                        option(value=parseInt(list.id))= list.name
             button Update Pet Status
-        form(action=`/cats/${cat.id}/addToCustomList`, method="post")
+        form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
             select(name="catListId")
-                each list in notDefaultList
+                each list in freeUserLists
                     option(value=list.id)= list.name
-            button Add to Cat List
+            if freeUserLists.length
+                button Add to Cat List
         ul
-            li= cat.breed
-            li= cat.coat
-            li= cat.size
-            li= cat.friendly
+            li Breed: #{cat.breed}
+            li Coat: #{cat.coat}
+            li Size: #{cat.size}
+            li Friendly: #{cat.friendly}
         a(href=`/users/${cat.userId}`) My Creator
         a(href=`/cats/${cat.id}/reviews/new`) Add Review
         each review in reviews
@@ -34,7 +37,7 @@ block content
                         li
                             a(href=`/users/${review.User.id}`)= review.User.firstName+' '+review.User.lastName
                         li
-                            p= review.rating
+                            p Rating: #{review.rating}
                         li
-                            p= review.content
+                            p Review: #{review.content}
 

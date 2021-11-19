@@ -10,7 +10,7 @@ const { demoUser } = require('../config/index');
 
 
 /* GET users listing. */
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', requireAuth, asyncHandler(async (req, res, next) => {
   const users = await User.findAll();
   res.render('users', {title: 'Pet Every Cat Users', users});
 }));
@@ -22,14 +22,14 @@ router.post('/demouser', asyncHandler(async(req, res) => {
   //res.redirect(`/users/${demouser.id}/cats`);
 }));
 
-router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
+router.get('/:id(\\d+)', requireAuth, csrfProtection, asyncHandler(async(req, res) => {
   const userId = req.params.id;
   const currentUser = res.locals.user.id
   const user = await User.findByPk(userId, {include: [Cat, Review]});
   res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken(), currentUser});
 }));
 
-router.get('/:id(\\d+)/edit', csrfProtection, asyncHandler(async(req, res) => {
+router.get('/:id(\\d+)/edit', requireAuth, csrfProtection, asyncHandler(async(req, res) => {
   const userId = parseInt(req.params.id, 10);
   if (userId === res.locals.user.id) {
     const user = await User.findByPk(userId, {include: [Cat, Review]});
@@ -56,7 +56,7 @@ const editUserValidators = [
 ]
 
 
-router.post('/:id(\\d+)/edit', editUserValidators, csrfProtection, asyncHandler(async(req, res) => {
+router.post('/:id(\\d+)/edit', requireAuth, editUserValidators, csrfProtection, asyncHandler(async(req, res) => {
   console.log(req.body)
   const { firstName, lastName, bio } = req.body
   const userId = parseInt(req.params.id, 10);
@@ -100,18 +100,18 @@ const signupValidators = [
     .withMessage('Username must not be longer than 50 characters')
     .custom((value) => {
       return User.findOne({ where: { username: value } })
-        .then(user => {
-          if (user) {
-            return Promise.reject('The provided username is already in use');
-          }
-        });
+      .then(user => {
+        if (user) {
+          return Promise.reject('The provided username is already in use');
+        }
+      });
     }),
-  check('password')
+    check('password')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a value for Password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'g')
     .withMessage('Password must contain at least 1 lowercase letter, uppercase letter, number, and special character (i.e. "!@#$%^&*")'),
-  check('confirmPassword')
+    check('confirmPassword')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a value for Confirm Password')
     .custom((value, { req }) => {
@@ -121,20 +121,20 @@ const signupValidators = [
         return true;
       };
     }),
-  check('bio')
+    check('bio')
     .exists({ checkFalsy: true })
     .withMessage('You MUST provide a bio')
-];
-
+  ];
+  
 router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (req, res) => {
   const { firstName, lastName, username, password, bio } = req.body;
-
+  
   const user = await User.build({
     firstName, lastName, username, bio
   });
-
+  
   const validatorErrors = validationResult(req);
-
+  
   if (validatorErrors.isEmpty()) {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.hashedPassword = hashedPassword;
@@ -149,7 +149,7 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
   const errors = validatorErrors.array().map(e => e.msg);
   res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken(), errors });
 }))
-
+  
 router.get('/log-in', csrfProtection, (req, res) => {
   res.render('log-in', { Title: 'Log In', csrfToken: req.csrfToken() })
 })
@@ -181,6 +181,8 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
         //TODO Log user in
         loginUser(req, res, user);
         req.session.save(() => res.redirect(`/${user.id}/cats`))
+
+        return
         //return res.redirect(`/${user.id}/cats`)
       }
     }
@@ -190,8 +192,6 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
   }
 
   res.render('log-in', { Title: "Log In", csrfToken: req.csrfToken(), errors, username })
-
-
 }))
 
 
@@ -202,14 +202,8 @@ router.post('/log-out', (req, res) => {
   //res.redirect('/')
 })
 
-router.get('/:id(\\d+)',  csrfProtection, asyncHandler(async(req, res) => {
-  const userId = req.params.id;
-  const user = await User.findByPk(userId, {include: [Cat, Review]});
-  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken()});
-}));
 
-router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req, res) => {
-
+router.get('/:id(\\d+)/cats', requireAuth, asyncHandler(async (req, res) => {
   const userId = res.locals.user.id
   console.log(res.locals.user.id, "LOCALS")
 
@@ -223,7 +217,7 @@ router.get('/:id(\\d+)/cats', restoreUser, requireAuth, asyncHandler(async (req,
 
 
 
-router.get('/:id(\\d+)/reviews', asyncHandler(async (req, res, next) => {
+router.get('/:id(\\d+)/reviews', requireAuth, asyncHandler(async (req, res, next) => {
   const userId = req.params.id;
   let title;
   let thisUser;
