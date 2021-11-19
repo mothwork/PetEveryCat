@@ -1,6 +1,5 @@
 const csrf = require('csurf')
 
-
 const csrfProtection = csrf({cookie: true})
 
 const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).catch(next);
@@ -13,6 +12,12 @@ const catListNotFound = catListId => {
   return error;
 };
 
+const reviewNotFound = reviewId => {
+  const error = new Error(`Review with ID ${reviewId} could not be found`);
+  error.title = "Review not found.";
+  error.status = 404;
+  return error;
+};
 
 const userNotFound = userId => {
   const error = new Error(`User with ID ${userId} could not be found`);
@@ -25,5 +30,6 @@ module.exports = {
   csrfProtection, 
   asyncHandler, 
   catListNotFound,
+  reviewNotFound,
   userNotFound
  }

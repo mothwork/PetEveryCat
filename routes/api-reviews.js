@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { csrfProtection, asyncHandler } = require('../utils')
+const { asyncHandler, reviewNotFound } = require('../utils')
+const { requireAuth } = require('../auth');
 const db = require('../db/models')
-const { User, CatList, Cat, Review } = db
+const { Review } = db
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAuth, asyncHandler(async (req, res) => {
   const { rating, content, catId } = req.body
   const userId = req.session.auth.userId;
 
@@ -14,14 +15,15 @@ router.post('/', asyncHandler(async (req, res) => {
   }
 }));
 
-router.delete('/:id(\\d+)', asyncHandler(async (req, res) => {
-  console.log('Im in!');
+router.delete('/:id(\\d+)', requireAuth, asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const review = await Review.findByPk(id);
   if (review) {
     await review.destroy();
     res.status = 204;
     return res.send();
+  } else {
+    next(reviewNotFound(id));
   }
 }));
 
