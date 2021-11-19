@@ -1,5 +1,5 @@
 /*
-DARK BROWN #B3884D 
+DARK BROWN #B3884D
 MINT GREEN #BAFFCE
 BEIGE #FFCD87
 LIGHT PURPLE #AF6EFF
@@ -13,9 +13,19 @@ h1 {
 }
 
 body {
-   background-color: #FFCC86;
-   font-family: 'PT Serif', serif;
+    background-color: #FFCC86;
+    font-family: 'PT Serif', serif;
+    display:flex;
+    flex-direction: column;
+    align-items: space-between;
+    position: relative;
+    min-height: 100vh;
 }
+
+a {
+    text-decoration: none;
+}
+
 
 nav {
     display: flex;
@@ -32,13 +42,11 @@ nav img {
 }
 
 nav a {
-    text-decoration: none;
     font-size: larger;
     font-weight: bold;
 }
 
 button {
-    text-decoration: none;
     border: #555555 1px solid;
     color: #BAFFCE;
     background-color: #382255;
@@ -57,4 +65,25 @@ button:hover {
 nav a:hover {
     color: #382255;
     font-weight: bold;
+}
+
+.main-content {
+    padding-bottom: 50px;
+}
+
+footer ul {
+    display:flex;
+    justify-content: space-around;
+    width: 100%;
+    list-style: none;
+}
+
+footer {
+    position: absolute;
+    align-items:center;
+    bottom: 0;
+    height: 50px;
+    display: flex;
+    width: 100%;
+    background-color: #B3884D;
 }
