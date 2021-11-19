@@ -6,6 +6,8 @@ block content
             li= `Username: ${user.username}`
             li= `Name: ${user.firstName} ${user.lastName}`
             li= `Bio: ${user.bio}`
+            li 
+              a(href=`/users/${user.id}/reviews`) Reviews
             if user.id === currentUser
               a(href=`/users/${user.id}/edit`)
                 button(class='edit') Edit Profile
