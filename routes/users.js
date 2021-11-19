@@ -19,7 +19,7 @@ router.post('/demouser', asyncHandler(async(req, res) => {
   const username = demoUser;
   const demouser = await User.findOne({ where: { username } })
   loginUser(req, res, demouser);
-  res.redirect(`/users/${demouser.id}/cats`);
+  //res.redirect(`/users/${demouser.id}/cats`);
 }));
 
 router.get('/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
@@ -169,7 +169,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
   } = req.body
 
   const validatorErrors = validationResult(req);
-  const errors = []
+  let errors = []
 
   if (validatorErrors.isEmpty()) {
     const user = await User.findOne({ where: { username } })
@@ -180,7 +180,8 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
       if (isPassword) {
         //TODO Log user in
         loginUser(req, res, user);
-        return res.redirect(`/${user.id}/cats`)
+        req.session.save(() => res.redirect(`/${user.id}/cats`))
+        //return res.redirect(`/${user.id}/cats`)
       }
     }
     errors.push('Invalid username or password')
@@ -193,11 +194,12 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
 }))
 
-router.use(requireAuth)
+
 
 router.post('/log-out', (req, res) => {
-  logOutUser(req, res);
-  res.redirect('/')
+  logOutUser(req, res)
+
+  //res.redirect('/')
 })
 
 router.get('/:id(\\d+)',  csrfProtection, asyncHandler(async(req, res) => {
