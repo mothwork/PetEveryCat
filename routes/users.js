@@ -57,7 +57,7 @@ const editUserValidators = [
 
 
 router.post('/:id(\\d+)/edit', requireAuth, editUserValidators, csrfProtection, asyncHandler(async(req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   const { firstName, lastName, bio } = req.body
   const userId = parseInt(req.params.id, 10);
   if (userId === res.locals.user.id) {
@@ -125,16 +125,16 @@ const signupValidators = [
     .exists({ checkFalsy: true })
     .withMessage('You MUST provide a bio')
   ];
-  
+
 router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (req, res) => {
   const { firstName, lastName, username, password, bio } = req.body;
-  
+
   const user = await User.build({
     firstName, lastName, username, bio
   });
-  
+
   const validatorErrors = validationResult(req);
-  
+
   if (validatorErrors.isEmpty()) {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.hashedPassword = hashedPassword;
@@ -149,7 +149,7 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
   const errors = validatorErrors.array().map(e => e.msg);
   res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken(), errors });
 }))
-  
+
 router.get('/log-in', csrfProtection, (req, res) => {
   res.render('log-in', { Title: 'Log In', csrfToken: req.csrfToken() })
 })
@@ -205,10 +205,10 @@ router.post('/log-out', (req, res) => {
 
 router.get('/:id(\\d+)/cats', requireAuth, asyncHandler(async (req, res) => {
   const userId = res.locals.user.id
-  console.log(res.locals.user.id, "LOCALS")
+  // console.log(res.locals.user.id, "LOCALS")
 
   if (parseInt(req.params.id, 10) !== userId) {
-    console.log(userId)
+    // console.log(userId)
     return res.redirect(`/`)
   }
   const cats = await Cat.findAll({where: {userId}})

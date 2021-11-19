@@ -23,7 +23,8 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
     const { userId } = req.session.auth;
     const reviews = await Review.findAll({ include: User, where: {catId} });
     const userLists = await CatList.findAll({ include: User, order: ['id'], where: { userId } })
-    console.log(reviews);    const cat = await Cat.findByPk(catId);
+    // console.log(reviews);
+    const cat = await Cat.findByPk(catId);
     const catsInLists = await CatsInList.findAll({ where: {catId} });
     // console.log(catsInLists);
     const catsInListsIds = catsInLists.map(join => join.catListId);
@@ -55,7 +56,7 @@ router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler
     const catId = req.params.id;
     // console.log(previousDefaultId);
     // const listToAddTo = CatList.findByPk(catListId);
-    
+
     if (previousDefaultId) {
         const removeFromList = await CatsInList.findOne({ where: { catListId: previousDefaultId, catId } })
         if (removeFromList) {
