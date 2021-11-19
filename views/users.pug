@@ -3,5 +3,8 @@ extends layout.pug
 block content
     .usersContainer
         each user in users
-            .userContainer
-                a(href=`/users/${user.id}`)= user.username
+            ul.userContainer
+                li Username:
+                  a(href=`/users/${user.id}`)= user.username
+                li= `Name: ${user.firstName} ${user.lastName}`
+                li
