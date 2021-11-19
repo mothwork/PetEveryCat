@@ -22,7 +22,9 @@ router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   if (catList && catList.canDelete) {
     console.log('HI!!!!!!!');
     const catInList = await CatsInList.findOne({ where: { catListId: catList.id } });
-    await catInList.destroy();
+    if (catInList) {
+      await catInList.destroy();
+    }
     await catList.destroy();
     res.status = 204;
     return res.end();
