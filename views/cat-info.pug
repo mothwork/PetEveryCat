@@ -3,8 +3,7 @@ extends layout.pug
 block content
     .cat
         div
-            figure
-                img(src=`${cat.imgUrl}`, alt="")
+            img(src=`${cat.imgUrl}`, alt="")
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
@@ -18,18 +17,17 @@ block content
             button Update Pet Status
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
-            select(name="catListId")
+            if freeUserLists.length
+              select(name="catListId")
                 each list in freeUserLists
                     option(value=list.id)= list.name
-            if freeUserLists.length
-                button Add to Cat List
+              button Add to Cat List
         ul
             li Breed: #{cat.breed}
             li Coat: #{cat.coat}
             li Size: #{cat.size}
             li Friendly: #{cat.friendly}
         a(href=`/users/${cat.userId}`) My Creator
-        a(href=`/cats/${cat.id}/reviews/new`) Add Review
         each review in reviews
             .review-container
                 .review-heading
@@ -40,4 +38,6 @@ block content
                             p Rating: #{review.rating}
                         li
                             p Review: #{review.content}
+        a(href=`/cats/${cat.id}/reviews/new`)
+          button Add Review
 
