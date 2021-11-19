@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { csrfProtection, asyncHandler } = require('../utils')
+const { asyncHandler } = require('../utils')
 const db = require('../db/models')
-const { User, CatList, Cat, Review, CatsInList } = db
+const { CatList, Cat, CatsInList } = db
+const { requireAuth } = require('../auth');
 
-router.get('/', asyncHandler(async (req, res) => {
-    const catLists = await CatList.findAll({ order: [['updatedAt']], where: { userId: req.session.auth.userId }, include: Cat })
+router.get('/', requireAuth, asyncHandler(async (req, res) => {
+    const catLists = await CatList.findAll({ order: [['id', "ASC"]], where: { userId: req.session.auth.userId }, include: Cat })
     res.json(catLists);
 }))
 
@@ -16,7 +17,7 @@ const catListNotFound = catListId => {
     return error;
 };
 
-router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
+router.delete('/:id(\\d+)', requireAuth, asyncHandler(async(req, res, next) => {
   const id = req.params.id;
   const catList = await CatList.findByPk(id);
   if (catList && catList.canDelete) {
@@ -32,9 +33,8 @@ router.delete('/:id(\\d+)', asyncHandler(async(req, res, next) => {
   }
 }));
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAuth, asyncHandler(async (req, res) => {
   const { name } = req.body;
-  console.log(name);
   const userId = req.session.auth.userId;
 
   if (name) {
@@ -43,20 +43,14 @@ router.post('/', asyncHandler(async (req, res) => {
   }
 }));
 
-router.put(
-  "/:id(\\d+)",
-  // tweetValidators,
-  // handleValidationErrors,
-  asyncHandler(async (req, res, next) => {
+router.put("/:id(\\d+)", requireAuth, asyncHandler(async (req, res, next) => {
     const id = req.params.id;
     const { name } = req.body;
 
     const catList = await CatList.findByPk(id);
 
     if (catList) {
-      const updatedCatList = await catList.update({
-        name
-      });
+      const updatedCatList = await catList.update({ name });
 
       res.json(updatedCatList);
     } else {
