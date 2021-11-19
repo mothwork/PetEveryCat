@@ -8,19 +8,21 @@ block content
         h1= cat.name
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden", name="previousDefaultId" value=currentDefaultList.id)
             select(name="catListId")
                 each list in defaultLists
-                    if list.id === currentDefaultList.id
-                        option(value=list.id selected)= `In List - ${list.name}`
+                    if parseInt(list.id) == parseInt(currentDefaultList.id)
+                        option(value=parseInt(list.id) selected)= `In List - ${list.name}`
                     else
-                        option(value=list.id)= list.name
+                        option(value=parseInt(list.id))= list.name
             button Update Pet Status
         form(action=`/cats/${cat.id}/addToCatList`, method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
             select(name="catListId")
-                each list in listsCatIsNotIn
+                each list in freeUserLists
                     option(value=list.id)= list.name
-            button Add to Cat List
+            if freeUserLists.length
+                button Add to Cat List
         ul
             li Breed: #{cat.breed}
             li Coat: #{cat.coat}

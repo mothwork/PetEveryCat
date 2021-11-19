@@ -13,48 +13,59 @@ router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
         const cats = await Cat.findAll()
         res.render('cats', { Title: 'Cats', cats })
     } catch (error) {
-        //console.log(error)
         res.send(error)
     }
 
 }))
 
-router.get('/:id(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
-    
-    const catId = req.params.id;
-    const userId = res.locals.user.id
-    const listsCatIsIn = await Cat.findOne({ include: CatList, where: { id: catId } });
-    const listsUserHas = await CatList.findAll({ where: { userId } });
-    const reviews = await Review.findAll({ include: User, where: { catId } });
+router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
+    const { catId } = req.params;
+    const { userId } = req.session.auth;
+    const reviews = await Review.findAll({ where: {catId} });
+    const userLists = await CatList.findAll({ include: User, order: ['id'], where: { userId } })
     const cat = await Cat.findByPk(catId);
-    console.log(cat);
+    const catsInLists = await CatsInList.findAll({ where: {catId} });
+    // console.log(catsInLists);
+    const catsInListsIds = catsInLists.map(join => join.catListId);
 
-    const listsCatisInId = listsCatIsIn.CatLists.map(list => list.id);
+    const defaultLists = [];
+    for (let i = 0; i < 3; i++) {
+    defaultLists.push(userLists.shift());
+    };
 
-    const currentDefaultList = listsCatIsIn.CatLists.reduce((accum, list) => {
-        if (listsUserHas.includes(list)) {
-            return list;
+    let currentDefaultList = defaultLists.reduce((accum, currentList) => {
+        if (catsInListsIds.includes(currentList.id)) {
+            return currentList;
         } else {
             return accum;
         }
-    });
+    }, null);
 
-    const defaultLists = [];
-    const customLists = [];
-    const listsCatIsNotIn = [];
+    if (!currentDefaultList) {
+        currentDefaultList = defaultLists[1];
+    }
+    console.log(currentDefaultList);
 
-    listsUserHas.forEach(list => {
-        if (list.canDelete) {
-            customLists.push(list);
-            if (!listsCatisInId.includes(list.id)) {
-                listsCatIsNotIn.push(list);
-            }
-        } else {
-            defaultLists.push(list);
+    const freeUserLists = userLists.filter(list => (!catsInListsIds.includes(list.id)));
+
+    res.render('cat-info', {title: cat.name, csrfToken: req.csrfToken(), cat, freeUserLists, defaultLists, reviews, currentDefaultList});
+}));
+
+router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler(async (req, res) => {
+    const { catListId, previousDefaultId } = req.body;
+    const catId = req.params.id;
+    // console.log(previousDefaultId);
+    // const listToAddTo = CatList.findByPk(catListId);
+    
+    if (previousDefaultId) {
+        const removeFromList = await CatsInList.findOne({ where: { catListId: previousDefaultId, catId } })
+        if (removeFromList) {
+            removeFromList.destroy();
         }
-    });
+    }
 
-    res.render("cat-info", { Title: `${cat.name}`, cat, reviews, csrfToken: req.csrfToken(), defaultLists, currentDefaultList, listsCatIsNotIn });
+    await CatsInList.create({ catId, catListId });
+    res.redirect(`/cats/${catId}`);
 }));
 
 
@@ -65,7 +76,6 @@ router.get('/new', csrfProtection, restoreUser, requireAuth, asyncHandler(async 
 }));
 
 const catValidators = [
-    // TODO: when database constraints are determined
     check('name')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a name')
@@ -96,7 +106,6 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
     const newCat = await Cat.build({
         name, breed, size, friendly, coat, userId, imgUrl
     })
-    //let errors = [];
     const validatorErrors = validationResult(req);
     if (validatorErrors.isEmpty()) {
 
@@ -127,7 +136,6 @@ router.get('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValid
 router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async (req, res) => {
     const catId = req.params.id;
     const catToUpdate = await db.Cat.findByPk(catId);
-    //catId = catToUpdate.id
 
     checkPermissions(catToUpdate, res.locals.user)
 
@@ -152,47 +160,13 @@ router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
     const catId = req.params.id
     const cat = await db.Cat.findByPk(catId)
     checkPermissions(cat, res.locals.user)
-    //await db.CatList.destroy({where: {catId}})
     await db.CatsInList.destroy({ where: { catId } })
     await db.Review.destroy({ where: { catId } })
     await cat.destroy()
 
     res.json({ message: 'successful' })
-})
+});
 
-// router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
-//     const { catListId } = req.body;
-//     const catId = req.params.id;
-//     const catList = await CatList.findByPk(catListId);
-
-//     if (catList) {
-//         checkPermissions(catList, res.locals.user);
-
-//         const newCatinList = await CatsInList.build({ catId, catListId });
-//         await newCatinList.save();
-//     }
-//     res.redirect(`/cats/${catId}`);
-//     return
-// }));
-
-
-router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const { catListId } = req.body;
-    const listToAddTo = await CatList.findByPk(catListId);
-    const catToAdd = await Cat.findByPk(id);
-
-    if (listToAddTo.canDelete) {
-        await CatsInList.create({catId: catToAdd.id, catListId: listToAddTo.id});
-    } else {
-        const listCatIsIn = await CatsInList.findOne({ where: {catId: catToAdd.id } });
-        if (listCatIsIn) {
-            await listCatIsIn.destroy();
-        }
-        await CatsInList.create({catId: catToAdd.id, catListId: listToAddTo.id});
-    }
-    res.redirect(`/cats/${id}`);
-}));
 
 router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
 
