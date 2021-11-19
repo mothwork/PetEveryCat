@@ -182,12 +182,14 @@ router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAu
     const catId = req.params.id;
     const catList = await CatList.findByPk(catListId);
 
-    checkPermissions(catList, res.locals.user);
+    if (catList) {
+        checkPermissions(catList, res.locals.user);
 
-    const newCatinList = await CatsInList.build({ catId, catListId });
-    await newCatinList.save();
-
+        const newCatinList = await CatsInList.build({ catId, catListId });
+        await newCatinList.save();
+    }
     res.redirect(`/cats/${catId}`);
+    return
 }));
 
 
