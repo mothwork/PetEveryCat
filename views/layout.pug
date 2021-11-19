@@ -9,6 +9,7 @@ html
       a(href="/") Home
       if locals.authenticated
         a(href='/cats') Cats
+        a(href='/users') Cat Owners
         a(href=`/users/${user.id}/cats`) My Cats
         a(href='/catlists') My Cat Lists
         a(href=`/users/${user.id}/reviews`) My Reviews
