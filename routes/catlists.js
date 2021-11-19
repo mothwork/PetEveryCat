@@ -24,7 +24,6 @@ router.get('/:id(\\d+)', requireAuth,  asyncHandler(async (req, res, next) => {
             include: Review
         }
     });
-
     // Question: Do we want to include average reviews in the list?
     if (!catList || catList.userId !== req.session.auth.userId) {
         return next(catListNotFound(req.params.id));
