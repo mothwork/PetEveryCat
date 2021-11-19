@@ -19,7 +19,7 @@ router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
         const cats = await Cat.findAll()
         res.render('cats', { Title: 'Cats', cats })
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send(error)
     }
 
@@ -46,13 +46,13 @@ router.get('/:id(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(
     const notDefaultList = []
     lists.forEach(async (list)=>{
         const catInList = await CatsInList.findOne({where:{catId, catListId:list.id}})
-        console.log(catInList)
+        //console.log(catInList)
         if (list.canDelete === true && catInList === null) {
             notDefaultList.push(list)
         }
     })
 
-    console.log(notDefaultList)
+    //console.log(notDefaultList)
 
     const reviews = await Review.findAll({ include: User, where: { catId } })
 
@@ -119,7 +119,7 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
     const newCat = await Cat.build({
         name, breed, size, friendly, coat, userId, imgUrl
     })
-    // const errors = [];
+    //let errors = [];
     const validatorErrors = validationResult(req);
     if (validatorErrors.isEmpty()) {
 
@@ -138,17 +138,19 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
 }))
 
 router.get('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async (req, res) => {
-    const catId = req.params.id;
+    let catId = req.params.id;
     const cat = await db.Cat.findByPk(catId);
+    catId = cat.id
 
     checkPermissions(cat, res.locals.user)
 
-    res.render('cats-edit', { Title: 'Edit Cat', cat, csrfToken: req.csrfToken() })
+    res.render('cats-edit', { Title: 'Edit Cat', cat, catId, csrfToken: req.csrfToken() })
 }))
 
 router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catValidators, asyncHandler(async (req, res) => {
     const catId = req.params.id;
     const catToUpdate = await db.Cat.findByPk(catId);
+    //catId = catToUpdate.id
 
     checkPermissions(catToUpdate, res.locals.user)
 
@@ -157,11 +159,15 @@ router.post('/edit/:id(\\d+)', csrfProtection, restoreUser, requireAuth, catVali
     const cat = { name, breed, size, friendly, coat, imgUrl }
     const validatorErrors = validationResult(req);
     if (validatorErrors.isEmpty()) {
+
         await catToUpdate.update(cat);
+
         res.redirect(`/cats/${catId}`);
+
     } else {
         const errors = validatorErrors.array().map(e => e.msg);
-        res.render('cats-edit', { Title: 'Edit Cat', cat, errors, csrfToken: req.csrfToken() });
+
+        res.render('cats-edit', { Title: 'Edit Cat', cat, catId, errors, csrfToken: req.csrfToken() });
     }
 }))
 
