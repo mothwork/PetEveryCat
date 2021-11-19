@@ -5,6 +5,7 @@ const loginUser = (req, res, user) => {
     userId: user.id
   };
   req.session.save(() => {res.redirect(`/users/${user.id}/cats`)})
+  return
 };
 
 const restoreUser = async (req, res, next) => {

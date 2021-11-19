@@ -13,7 +13,7 @@ router.use(requireAuth)
 
 router.get('/:id(\\d+)/edit', csrfProtection, asyncHandler(async(req, res) => {
     const reviewId = req.params.id;
-    const review = await Review.findByPk(reviewId);
+    const review = await Review.findByPk(reviewId, { include: Cat });
     res.render('edit-review', { title: 'Edit Review', review, csrfToken: req.csrfToken() })
 }))
 
