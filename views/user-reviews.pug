@@ -16,8 +16,10 @@ block content
             each review in reviews
                 tr(id=`review-${review.id}`)
                     td
-                      img(src=`${review.Cat.imgUrl}`, alt="", style="max-width: 150px")
-                    td= review.Cat.name
+                      a(href=`/cats/${review.Cat.id}`) 
+                        img(src=`${review.Cat.imgUrl}`, alt="", style="max-width: 150px")
+                    td 
+                      a(href=`/cats/${review.Cat.id}`)= review.Cat.name
                     td= review.rating
                     td= review.content
                     td
