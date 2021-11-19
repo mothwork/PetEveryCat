@@ -143,8 +143,8 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
     await CatList.create({userId: user.id, name: "Want to Pet", canDelete: false});
     await CatList.create({userId: user.id, name: "Currently Petting", canDelete: false});
     // TO DO: log in user
-    loginUser(req, res, user);
-    return res.redirect(`/users/${user.id}`);
+    return loginUser(req, res, user);
+    // return res.redirect(`/users/${user.id}`);
   }
   const errors = validatorErrors.array().map(e => e.msg);
   res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken(), errors });
@@ -179,10 +179,8 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
       if (isPassword) {
         //TODO Log user in
-        loginUser(req, res, user);
-        req.session.save(() => res.redirect(`/${user.id}/cats`))
+        return loginUser(req, res, user);
 
-        return
         //return res.redirect(`/${user.id}/cats`)
       }
     }
