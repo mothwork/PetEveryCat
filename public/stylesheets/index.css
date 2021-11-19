@@ -1,9 +1,20 @@
+/*
+DARK BROWN #B3884D 
+MINT GREEN #BAFFCE
+BEIGE #FFCD87
+LIGHT PURPLE #AF6EFF
+DARK PURPLE #7F56B3
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
+
 h1 {
     color: #555555;
 }
 
 body {
    background-color: #FFCC86;
+   font-family: 'PT Serif', serif;
 }
 
 nav {
@@ -23,12 +34,27 @@ nav img {
 nav a {
     text-decoration: none;
     font-size: larger;
+    font-weight: bold;
 }
 
-nav button {
+button {
     text-decoration: none;
     border: #555555 1px solid;
-    background-color: #87bc96;
     color: #BAFFCE;
-    padding: 2px;
+    background-color: #382255;
+    padding: 5px 9px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin: 3px;
+}
+
+button:hover {
+    color: #382255;
+    background-color: #BAFFCE;
+    cursor: pointer;
+}
+
+nav a:hover {
+    color: #382255;
+    font-weight: bold;
 }
