@@ -8,12 +8,6 @@ const e = require('express')
 
 const router = express.Router()
 
-
-
-
-
-
-
 router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
@@ -26,59 +20,42 @@ router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
 }))
 
 router.get('/:id(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandler(async (req, res) => {
-    const id = req.params.id
-    const catId = id
+    
+    const catId = req.params.id;
     const userId = res.locals.user.id
-    const cat = await Cat.findOne({ where: { id } }, { include: { User } })
-    const lists = await CatList.findAll({ where: { userId } })
-    const listsCatIsIn = await CatsInList.findAll({ where: { catId }, })    //
+    const listsCatIsIn = await Cat.findOne({ include: CatList, where: { id: catId } });
+    const listsUserHas = await CatList.findAll({ where: { userId } });
+    const reviews = await Review.findAll({ include: User, where: { catId } });
+    const cat = await Cat.findByPk(catId);
+    console.log(cat);
 
+    const listsCatisInId = listsCatIsIn.CatLists.map(list => list.id);
 
-    // const notDefaultList = lists.filter(async list => {
-    //     const catInList = await CatsInList.findOne({where:{catId, catListId:list.id}})
-    //     //console.log(catInList)
-    //     console.log(list.canDelete)
-    //     console.log(catInList)
-    //     console.log(list.canDelete === true && !catInList)
-    //     return list.canDelete === true && catInList !== null
-    // });
-
-    const notDefaultList = []
-    lists.forEach(async (list)=>{
-        const catInList = await CatsInList.findOne({where:{catId, catListId:list.id}})
-        //console.log(catInList)
-        if (list.canDelete === true && catInList === null) {
-            notDefaultList.push(list)
+    const currentDefaultList = listsCatIsIn.CatLists.reduce((accum, list) => {
+        if (listsUserHas.includes(list)) {
+            return list;
+        } else {
+            return accum;
         }
-    })
+    });
 
-    //console.log(notDefaultList)
+    const defaultLists = [];
+    const customLists = [];
+    const listsCatIsNotIn = [];
 
-    const reviews = await Review.findAll({ include: User, where: { catId } })
-
-    let catListId
-    let catListVal
-
-    for (let i = 0; i < lists.length; i++) {
-        const listEntry = lists[i];
-        for (let j = 0; j < listsCatIsIn.length; j++) {
-            const catsInListEntry = listsCatIsIn[j];
-            if (listEntry.id === catsInListEntry.catListId) {
-                catListId = listEntry.name
-                catListVal = listEntry.name
-                break
+    listsUserHas.forEach(list => {
+        if (list.canDelete) {
+            customLists.push(list);
+            if (!listsCatisInId.includes(list.id)) {
+                listsCatIsNotIn.push(list);
             }
-
+        } else {
+            defaultLists.push(list);
         }
-    }
-    if (!catListId) {
-        catListId = "Want to Pet?"
-        catListVal = "Want to Pet"
-    }
+    });
 
-
-    res.render("cat-info", { Title: `${cat.name}`, cat, catListId, catListVal, reviews, csrfToken: req.csrfToken(), notDefaultList }) //Does this work?
-}))
+    res.render("cat-info", { Title: `${cat.name}`, cat, reviews, csrfToken: req.csrfToken(), defaultLists, currentDefaultList, listsCatIsNotIn });
+}));
 
 
 router.get('/new', csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
@@ -183,27 +160,26 @@ router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
     res.json({ message: 'successful' })
 })
 
-router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
-    const { catListId } = req.body;
-    const catId = req.params.id;
-    const catList = await CatList.findByPk(catListId);
+// router.post(`/:id(\\d+)/addToCustomList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
+//     const { catListId } = req.body;
+//     const catId = req.params.id;
+//     const catList = await CatList.findByPk(catListId);
 
-    if (catList) {
-        checkPermissions(catList, res.locals.user);
+//     if (catList) {
+//         checkPermissions(catList, res.locals.user);
 
-        const newCatinList = await CatsInList.build({ catId, catListId });
-        await newCatinList.save();
-    }
-    res.redirect(`/cats/${catId}`);
-    return
-}));
+//         const newCatinList = await CatsInList.build({ catId, catListId });
+//         await newCatinList.save();
+//     }
+//     res.redirect(`/cats/${catId}`);
+//     return
+// }));
 
 
 router.post(`/:id(\\d+)/addToCatList`, csrfProtection, restoreUser, requireAuth, asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const { catListName } = req.body;
-    console.log(catListName);
-    const listToAddTo = await CatList.findOne({ where: { name: catListName } });
+    const { catListId } = req.body;
+    const listToAddTo = await CatList.findByPk(catListId);
     const catToAdd = await Cat.findByPk(id);
 
     if (listToAddTo.canDelete) {
