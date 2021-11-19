@@ -109,7 +109,7 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
     if (validatorErrors.isEmpty()) {
 
         await newCat.save();
-        const cat = await Cat.findOne({ where: { name } });
+        const cat = await Cat.findOne({ where: { name }, order: [['createdAt', 'DESC']] });
         const catList = await CatList.findOne({where:{name:"Want to Pet", userId: res.locals.user.id}})
         await CatsInList.create({catId: cat.id, catListId: catList.id})
         res.redirect(`/cats/${cat.id}`);

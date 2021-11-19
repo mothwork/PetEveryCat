@@ -1,6 +1,7 @@
 extends layout.pug
 
 block content
+    h1= title
     .catsContainer
         each cat in cats
           a(href=`/cats/${cat.id}`)

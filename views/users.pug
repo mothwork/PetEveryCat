@@ -3,8 +3,10 @@ extends layout.pug
 block content
     .usersContainer
         each user in users
-            ul.userContainer
+          div.userContainer
+            ul
                 li Username:
                   a(href=`/users/${user.id}`)= user.username
                 li= `Name: ${user.firstName} ${user.lastName}`
                 li
+            .userBox(style=`background-image: url('favicon.ico')`)

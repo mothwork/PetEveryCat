@@ -79,6 +79,10 @@ footer ul {
     list-style: none;
 }
 
+li {
+    list-style: none;
+}
+
 footer {
     position: absolute;
     align-items:center;
@@ -96,7 +100,7 @@ footer {
     overflow: hidden;
     margin: 15px;
     background-color: #B3884D;
-    background-image: url("../favicon.ico");
+    /* background-image: url("../favicon.ico"); */
     background-position: center;
     background-size:cover;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -105,9 +109,6 @@ footer {
 .catContainer img {
     height: 100%;
     width: 100%;
-
-
-    /* object-position: center; */
 }
 
 .catsContainer {
@@ -115,8 +116,11 @@ footer {
     flex-wrap: wrap;
     justify-content: space-around;
     max-width: 1000px;
+}
 
-
+body h1 {
+    font-size: 100px;
+    text-align: center;
 }
 
 .catbox {
@@ -139,5 +143,26 @@ footer {
 
 .catbox:hover {
     box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
+}
 
+.userContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #B3884D;
+    border-radius: 4px;
+    margin: 5px;
+    text-decoration:none;
+    height: 175px;
+    padding: 3px;
+}
+
+.userBox {
+    height: 175px;
+    width: 175px;
+    background-position: center;
+    background-size:cover;
+    /* margin-bottom: 8px; */
+    padding: 10px;
 }
