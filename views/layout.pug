@@ -3,10 +3,14 @@ html
   head
       block head
         title=title
+
         link(rel='stylesheet' href='/stylesheets/reset.css')
+        link(rel="stylesheet" href="/stylesheets/index.css")
   body
     nav
-      a(href="/") Home
+      a(href="/")
+        img(src="/favicon.ico", alt="")
+
       if locals.authenticated
         a(href='/cats') Cats
         a(href='/users') Cat Owners
