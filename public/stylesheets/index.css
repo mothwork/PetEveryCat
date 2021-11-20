@@ -197,7 +197,7 @@ td img {
 
 .tableContainer tbody tr:nth-child(odd) {
     background-color:#B3884D;
-  }
+}
 
 .tableContainer td:first-child,
 th:first-child {
@@ -303,6 +303,12 @@ margin: 30px 0;
     font-size: 30px;
 }
 
+.catList:hover {
+    color: #BAFFCE;
+    cursor: pointer;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
+}
+
 .catsContainerNew {
     max-width: auto;
     max-height: auto;
@@ -326,3 +332,148 @@ td p {
 
     font-weight: bold;
 }
+
+/* My Reviews Table */
+
+.my-reviews table {
+    border-collapse: collapse;
+    font-size: 20px;
+    width: 750px;
+    text-align: center;
+}
+
+.my-reviews td {
+    padding: 10px;
+}
+
+.my-reviews a {
+    font-size: 20px;
+}
+
+.my-reviews a:hover {
+    color: #BAFFCE;
+    cursor: pointer;
+}
+
+.my-reviews tbody tr:nth-child(odd) {
+    background-color:#B3884D;
+}
+
+.my-reviews img {
+    padding: 10px;
+}
+
+.my-reviews td:first-child,
+th:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.my-reviews td:last-child,
+th:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+.my-reviews tbody tr:nth-child(even) {
+    border-radius: 20px;
+    margin: 30px 0;
+}
+
+.review-form {
+    font-size: 16px;
+    margin: 10px;
+    background-color: #B3884D;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.review-form h1 {
+    font-size: 50px;
+}
+
+.review-form img {
+    max-width: 350px;
+    border-radius: 50%;
+    display: block;
+    margin: auto;
+}
+
+.review-form li, label {
+    margin: 10px;
+}
+
+.review-form button {
+    display: block;
+    margin: 10px auto;
+}
+
+.review-form .form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+textarea {
+    font-family: 'PT Serif', serif;
+    width: 250px;
+    height: 70px;
+}
+
+.profile {
+    font-size: 16px;
+    margin: 10px;
+    background-color: #B3884D;
+    padding: 15px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile ul {
+    max-width: 500px;
+    margin: 15px;
+    margin-bottom: 30px;
+}
+
+.profile li {
+    margin: 10px;
+}
+
+.profile button {
+    display: block;
+    margin: 10px auto;
+}
+
+.profile h2 {
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.profile td {
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+.profile table {
+    border-collapse: collapse;
+    background-color: #FFCD87;
+    border-radius: 20px;
+}
+
+.profile th {
+    padding-top: 10px
+}
+
+.profile a:hover {
+    color: #BAFFCE;
+    cursor: pointer;
+}
+
+.profile img:hover {
+    cursor: pointer;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
+}
+
