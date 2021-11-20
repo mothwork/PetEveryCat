@@ -48,7 +48,7 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
 
     const freeUserLists = userLists.filter(list => (!catsInListsIds.includes(list.id)));
 
-    res.render('cat-info', {title: cat.name, csrfToken: req.csrfToken(), cat, freeUserLists, defaultLists, reviews, currentDefaultList});
+    res.render('cat-info', {title: cat.name, csrfToken: req.csrfToken(), cat, freeUserLists, defaultLists, reviews, userId, currentDefaultList});
 }));
 
 router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler(async (req, res) => {
