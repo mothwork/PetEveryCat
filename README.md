@@ -15,6 +15,7 @@ We added CRUD features for making a cat, making a cat list to put said cat or ca
 
 Early on, we faced a database challenge when we were trying to delete a cat. We would try to delete a cat and would keep getting errors. We eventually realized a cat had dependencies because they may have had a review or may be in a cat list. We were able to fix this by removing those dependencies and then we were able to delete the cat without issues.
 
+```js
 router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
     const catId = req.params.id
     const cat = await db.Cat.findByPk(catId)
@@ -25,5 +26,6 @@ router.delete('/:id(\\d+)', requireAuth, async (req, res) => {
 
     res.json({ message: 'successful' })
 })
+```
 
 The code above was used to solve the challenge we were experiencing early on.
