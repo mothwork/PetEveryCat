@@ -13,7 +13,8 @@ block content
                 button(class='edit') Edit Profile
             .catsContainerNew
               table
-                  thead= `${user.username}'s Cats`
+                  thead
+                    h2=`${user.username}'s Cats`
                     tr
                       th Name
                       th Picture

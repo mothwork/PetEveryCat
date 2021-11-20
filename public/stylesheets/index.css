@@ -313,3 +313,16 @@ td p {
     max-width: 300px;
     overflow-wrap: break-word;
 }
+
+.catsContainerNew h2 {
+    margin-top: 15px;
+    font-size: 25px;
+    text-align: center;
+    color: #555555;
+}
+
+.catsContainerNew a:hover {
+    color: #BAFFCE;
+
+    font-weight: bold;
+}
