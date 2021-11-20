@@ -199,14 +199,19 @@ const reviewValidators = [
 
 router.post('/:id(\\d+)/reviews/new', requireAuth, reviewValidators, csrfProtection, asyncHandler(async (req, res) => {
     const validatorErrors = validationResult(req);
+    const userId = req.session.auth.userId;
+    const catId = req.params.id;
     const { rating, content } = req.body;
+    const cat = await Cat.findByPk(catId);
 
+    
     if (validatorErrors.isEmpty()) {
-        const review = await Review.create({ rating, content, catId: req.params.id, userId: req.session.auth.userId });
+        const review = await Review.create({ rating, content, catId, userId });
         res.redirect(`/cats/${req.params.id}`);
     } else {
+        const review = await Review.findOne({ where: { userId, catId } });
         const errors = validatorErrors.array().map(err => err.msg);
-        res.render('review-new', { title: "Create New Review", review: { rating, content }, errors, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", review: { rating, content }, cat, errors, csrfToken: req.csrfToken() });
     }
 }));
 
