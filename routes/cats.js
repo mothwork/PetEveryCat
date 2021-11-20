@@ -172,9 +172,10 @@ router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(a
     const catId = req.params.id;
     const userId = req.session.auth.userId;
     const review = await Review.findOne({ where: { userId, catId } });
+    const cat = await Cat.findByPk(catId);
     if (!review) {
         const review = await Review.build();
-        res.render('review-new', { title: "Create New Review", review, catId, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", review, cat, csrfToken: req.csrfToken() });
     } else {
         res.redirect(`/reviews/${review.id}/edit`);
     }

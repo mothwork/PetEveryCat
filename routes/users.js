@@ -179,6 +179,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
       if (isPassword) {
         //TODO Log user in
+
         return loginUser(req, res, user);
 
         //return res.redirect(`/${user.id}/cats`)
