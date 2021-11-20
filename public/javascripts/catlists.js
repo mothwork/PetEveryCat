@@ -45,16 +45,18 @@ document.addEventListener("DOMContentLoaded", async e => {
         const catListHTML = catLists.map(catList => {
             if (catList.canDelete) {
                 return `
-                <div id="${catList.id}-catList">
-                <a href="/catLists/${catList.id}">${catList.name}</a>
-                  <button id="${catList.id}-edit" class="edit">Edit Cat List</button>
-                  <button id="${catList.id}-delete" class="delete">Delete Cat List</button>
+                <div id="${catList.id}-catList" class="catList">
+                <a href="/catLists/${catList.id}" class="cat-list-anchor">${catList.name}</a>
+                  <div class="list-buttons">
+                    <button id="${catList.id}-edit" class="edit">Edit Cat List</button>
+                    <button id="${catList.id}-delete" class="delete">Delete Cat List</button>
+                  </div>
                   </div>
                 `
             } else {
                 return `
-                <div id="${catList.id}-catList">
-                    <a href="/catLists/${catList.id}">${catList.name}</a>
+                <div id="${catList.id}-catList" class="catList">
+                    <a href="/catLists/${catList.id}" class="cat-list-anchor">${catList.name}</a>
                 </div>
                 `
             };
@@ -73,6 +75,7 @@ document.addEventListener("DOMContentLoaded", async e => {
             const catListName = catListToRemove.querySelector('a').innerText;
             if (window.confirm(`Are you sure you want to delete catlist "${catListName}"?`)) {
                 catListToRemove.innerHTML = '';
+
                 await fetch (`/api/catlists/${id}`, {
                     method: "DELETE"
                 });

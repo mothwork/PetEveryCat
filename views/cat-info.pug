@@ -28,8 +28,8 @@ block content
                 li Coat: #{cat.coat}
                 li Size: #{cat.size}
                 li Friendly: #{cat.friendly}
-                li My Creator:
-                    a(href=`/users/${cat.userId}`)= cat.User.username
+                li My Creator: 
+                    a(href=`/users/${cat.userId}`)= ' ' + cat.User.username
 
         h2 Reviews
         each review in reviews
