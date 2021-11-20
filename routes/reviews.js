@@ -36,7 +36,7 @@ router.post('/:id(\\d+)/edit', reviewValidators, csrfProtection, asyncHandler(as
     const validatorErrors = validationResult(req);
     const reviewId = req.params.id;
     const { content, rating } = req.body;
-    const review = await Review.findByPk(reviewId);
+    const review = await Review.findByPk(reviewId, { include: Cat });
 
     if (validatorErrors.isEmpty()) {
         await review.update({
