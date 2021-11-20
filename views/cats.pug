@@ -1,9 +1,16 @@
 extends layout.pug
 
 block content
+    h1= title
     .catsContainer
         each cat in cats
-            .catContainer
-            -// Not sure if this works
-                a(href=`/cats/${cat.id}`)= cat.name
-                  img(src=`${cat.imgUrl}`, alt="" style= "max-width: 200px")
+          a(href=`/cats/${cat.id}`)
+            .catbox
+              p= cat.name
+
+                if cat.imgUrl
+                  .catContainer(style=`background-image: url(${cat.imgUrl})`)
+                else
+                  .catContainer(style=`background-image: url('favicon.ico')`)
+                  //- .catImg(style=`background-image: url(${cat.imgUrl})`)
+                  //- img(src=`${cat.imgUrl}`, alt="" style)

@@ -3,21 +3,8 @@ extends layout.pug
 block content 
 
     script(src="/javascripts/catlists.js" type="module")
-    h2 My Cat Lists
+    h1 My Cat Lists
     .catlist-container
     .form-container
     .inner-wrapper
         input(type="hidden" name="_csrf" value=csrfToken)
-    //- each catList in catLists
-    //-   div(id=`${catList.id}-catlist`)
-    //-     a(href=`/catLists/${catList.id}`)= catList.name
-    //-     each cat in catList.Cats
-    //-       div 
-    //-       a(href=`/cats/${cat.id}`)= cat.name
-    //-     //- a(href=`/catlists/${catList.id}/edit`)
-    //-     button(id=`${catList.id}-edit` class="edit") Edit Cat List
-    //-     //- a(href=`/catlists/${catList.id}/delete`)
-    //-     button(id=`${catList.id}-delete` class="delete") Delete Cat List
-    //-       //- img(src= cat.imgUrl)
-    //- //- a(href="/catlists/new")
-    //- button(id=`new` class="new") Create New Cat List

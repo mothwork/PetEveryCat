@@ -10,18 +10,19 @@ block content
                 th Cat Name
                 th Rating
                 th Review
-                th
+                th Options
                 th
         tbody
             each review in reviews
                 tr(id=`review-${review.id}`)
                     td
                       a(href=`/cats/${review.Cat.id}`) 
-                        img(src=`${review.Cat.imgUrl}`, alt="", style="max-width: 150px")
+                        img(src=`${review.Cat.imgUrl}`, alt="")
                     td 
                       a(href=`/cats/${review.Cat.id}`)= review.Cat.name
                     td= review.rating
-                    td= review.content
+                    td
+                      p= review.content
                     td
                         if thisUser
                           a(href=`/reviews/${review.id}/edit`)

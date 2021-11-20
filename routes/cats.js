@@ -11,7 +11,7 @@ const router = express.Router()
 router.get('/', requireAuth, restoreUser, asyncHandler(async (req, res) => {
     try {
         const cats = await Cat.findAll()
-        res.render('cats', { Title: 'Cats', cats })
+        res.render('cats', { title: 'Cats', cats })
     } catch (error) {
         res.send(error)
     }
@@ -23,10 +23,11 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
     const { userId } = req.session.auth;
     const reviews = await Review.findAll({ include: User, where: {catId} });
     const userLists = await CatList.findAll({ include: User, order: ['id'], where: { userId } })
-    console.log(reviews);    const cat = await Cat.findByPk(catId);
+    const cat = await Cat.findOne({where:{id:catId}, include:User});
     const catsInLists = await CatsInList.findAll({ where: {catId} });
     // console.log(catsInLists);
     const catsInListsIds = catsInLists.map(join => join.catListId);
+
 
     const defaultLists = [];
     for (let i = 0; i < 3; i++) {
@@ -55,7 +56,7 @@ router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler
     const catId = req.params.id;
     // console.log(previousDefaultId);
     // const listToAddTo = CatList.findByPk(catListId);
-    
+
     if (previousDefaultId) {
         const removeFromList = await CatsInList.findOne({ where: { catListId: previousDefaultId, catId } })
         if (removeFromList) {
@@ -109,7 +110,7 @@ router.post('/new', csrfProtection, restoreUser, requireAuth, catValidators, asy
     if (validatorErrors.isEmpty()) {
 
         await newCat.save();
-        const cat = await Cat.findOne({ where: { name } });
+        const cat = await Cat.findOne({ where: { name }, order: [['createdAt', 'DESC']] });
         const catList = await CatList.findOne({where:{name:"Want to Pet", userId: res.locals.user.id}})
         await CatsInList.create({catId: cat.id, catListId: catList.id})
         res.redirect(`/cats/${cat.id}`);
