@@ -3,6 +3,14 @@ include utils.pug
 
 block content 
   +validationErrorSummary(errors)
+  ul
+    li Name: #{cat.name}
+    li
+      img(src=`${cat.imgUrl}` style="max-width:100px")
+    li Breed: #{cat.breed}
+    li Coat: #{cat.coat}
+    li Size: #{cat.size}
+    li Friendly: #{cat.friendly}
   form(method="post" action=`/cats/${catId}/reviews/new`)
     input(type="hidden" name="_csrf" value=csrfToken)
     label(for="rating") Rating: 
