@@ -1,34 +1,34 @@
 extends layout.pug
 
 block content
-    .userContainer
+    .userContainerNew
          ul
             li= `Username: ${user.username}`
             li= `Name: ${user.firstName} ${user.lastName}`
             li= `Bio: ${user.bio}`
-            li 
+            li
               a(href=`/users/${user.id}/reviews`) Reviews
             if user.id === currentUser
               a(href=`/users/${user.id}/edit`)
                 button(class='edit') Edit Profile
-            .catsTable
-            table
-                thead= `${user.username}'s Cats`
-                  tr
-                    th Name
-                    th Picture
-                    th My Rating
-                    th My Review
-                tbody
-                  each cat in user.Cats
+            .catsContainerNew
+              table
+                  thead= `${user.username}'s Cats`
                     tr
-                      td
-                        a(href=`/cats/${cat.id}`)= cat.name
-                      td
-                        img(src=cat.imgUrl, alt="")
-                      each review in user.Reviews
-                        if review.catId === cat.id
-                          .reviewContainer
+                      th Name
+                      th Picture
+                      th My Rating
+                      th My Review
+                  tbody
+                    each cat in user.Cats
+                      tr
+                        td
+                          a(href=`/cats/${cat.id}`)= cat.name
+                        td
+                          a(href=`/cats/${cat.id}`)
+                            img(src=cat.imgUrl, alt="")
+                        each review in user.Reviews
+                          if review.catId === cat.id
                             td
                                 p= review.rating
                             td
