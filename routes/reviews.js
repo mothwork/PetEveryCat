@@ -22,7 +22,7 @@ const reviewValidators = [
       .exists({ checkFalsy: true })
       .withMessage("Please provide a rating")
       .custom(value => {
-          if (value > 5 || value < 1) {
+          if (value > 5 || value < 1 || (typeof value !== 'number')) {
               throw new Error("Rating must be between 1 and 5")
           }
           else return true
