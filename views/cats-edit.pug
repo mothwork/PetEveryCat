@@ -3,17 +3,18 @@ include utils.pug
 
 block content
     +validationErrorSummary(errors)
-    form(action=`/cats/edit/${catId}` method='post')
-        -// don't know if userId works
-        //- input(type='hidden' name='userId' value=userId)
-        input(type='hidden' name='_csrf' value=csrfToken)
-        +field('Cat Name', 'name', cat.name)
-        +field('Breed', 'breed', cat.breed)
-        +field('Coat', 'coat', cat.coat)
-        +field('Size', 'size', cat.size)
-        label(for='friendly') Is friendly?
-        select(name='friendly')
-            option(value='true') True
-            option(value='false') False
-        +field('Image', 'imgUrl', cat.imgUrl)
-        button Update Cat
+    .review-form
+        form(action=`/cats/edit/${catId}` method='post')
+            -// don't know if userId works
+            //- input(type='hidden' name='userId' value=userId)
+            input(type='hidden' name='_csrf' value=csrfToken)
+            +field('Cat Name', 'name', cat.name)
+            +field('Breed', 'breed', cat.breed)
+            +field('Coat', 'coat', cat.coat)
+            +field('Size', 'size', cat.size)
+            label(for='friendly') Is friendly?
+            select(name='friendly')
+                option(value='true') True
+                option(value='false') False
+            +field('Image', 'imgUrl', cat.imgUrl)
+            button Update Cat
