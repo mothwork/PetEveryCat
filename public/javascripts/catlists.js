@@ -29,11 +29,22 @@ document.addEventListener("DOMContentLoaded", async e => {
         form.appendChild(csrf);
         form.innerHTML += `
         <label for="name">Name</label>
-        <input name="name" type="text">
+        <input name="name" type="text" id="create-input">
         <button id="create">Submit</button>
+        <input type="button" value="Cancel" id="cancel-create">
         `
         formContainer.appendChild(form);
+        const input = document.getElementById('create-input');
+        input.focus();
+        input.select();
+
         createBtn.disabled = true;
+        const cancelBtn = document.getElementById('cancel-create');
+        cancelBtn.addEventListener("click", async e => {
+            createBtn.disabled = false;
+            form.innerHTML = '';
+            // // await newList();
+        });
     });
 
     const newList = async () => {
@@ -92,12 +103,15 @@ document.addEventListener("DOMContentLoaded", async e => {
             const editForm = document.createElement("form");
             editForm.innerHTML = `
                 <label for="name">Name</label>
-                <input name="name" type="text" value="${text}">
+                <input name="name" type="text" value="${text}" id="edit-input">
                 <button id="edit">Submit</button>
                 <input type="button" value="Cancel" id="cancel">
             `
             catListToEdit.innerHTML = ''
             catListToEdit.appendChild(editForm);
+            const input = document.getElementById('edit-input');
+            input.focus();
+            input.select();
             editForm.addEventListener("submit", async e => {
                 e.preventDefault();
                 const formData = new FormData(editForm);
@@ -114,7 +128,6 @@ document.addEventListener("DOMContentLoaded", async e => {
             cancelBtn.addEventListener("click", async e => {
                 await newList();
             });
-            
         }));
         
     };

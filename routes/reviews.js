@@ -21,6 +21,8 @@ const reviewValidators = [
     check("rating")
       .exists({ checkFalsy: true })
       .withMessage("Please provide a rating")
+      .matches(/^[0-9]+$/)
+      .withMessage('Rating must be a number!')
       .custom(value => {
           if (value > 5 || value < 1) {
               throw new Error("Rating must be between 1 and 5")
@@ -36,7 +38,7 @@ router.post('/:id(\\d+)/edit', reviewValidators, csrfProtection, asyncHandler(as
     const validatorErrors = validationResult(req);
     const reviewId = req.params.id;
     const { content, rating } = req.body;
-    const review = await Review.findByPk(reviewId);
+    const review = await Review.findByPk(reviewId, { include: Cat });
 
     if (validatorErrors.isEmpty()) {
         await review.update({
