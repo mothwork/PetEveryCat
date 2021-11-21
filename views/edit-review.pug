@@ -3,22 +3,22 @@ include utils.pug
 
 block content 
   +validationErrorSummary(errors)
-  ul
-    li Name: #{review.Cat.name}
-    li
-      img(src=`${review.Cat.imgUrl}` style="max-width:100px")
-    li Breed: #{review.Cat.breed}
-    li Coat: #{review.Cat.coat}
-    li Size: #{review.Cat.size}
-    li Friendly: #{review.Cat.friendly}
-  form(method="post" action=`/reviews/${review.id}/edit`)
-    input(type="hidden" name="_csrf" value=csrfToken)
-    label(for="rating") Rating: 
-    select(name="rating")
-      each value in [1, 2, 3, 4, 5]
-        if value === parseInt(review.rating, 10)
-          option(value=value selected)= value
-        else 
-          option(value=value)= value
-    +field("Review:", "content", review.content, "textarea")
-    button Submit
+  .review-form
+    h1= review.Cat.name 
+    img(src=`${review.Cat.imgUrl}`)
+    ul
+      li Breed: #{review.Cat.breed}
+      li Coat: #{review.Cat.coat}
+      li Size: #{review.Cat.size}
+      li Friendly: #{review.Cat.friendly}
+    form(method="post" action=`/reviews/${review.id}/edit`)
+      input(type="hidden" name="_csrf" value=csrfToken)
+      label(for="rating") Rating: 
+      select(name="rating")
+        each value in [1, 2, 3, 4, 5]
+          if value === parseInt(review.rating, 10)
+            option(value=value selected)= value
+          else 
+            option(value=value)= value
+      +field("Review:", "content", review.content, "textarea")
+      button Submit

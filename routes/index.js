@@ -4,12 +4,12 @@ var router = express.Router();
 const { User } = require('../db/models');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', async (req, res, next) => {
   let user;
   if(res.locals.authenticated) {
     user = res.locals.user;
   } else {
-    user = User.build();
+    user = await User.build();
   }
     res.render('index', { title: 'Pet Every Cat', user });
 });

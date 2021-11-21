@@ -1,37 +1,37 @@
 extends layout.pug
 
 block content
-    .userContainerNew
-         ul
-            li= `Username: ${user.username}`
-            li= `Name: ${user.firstName} ${user.lastName}`
-            li= `Bio: ${user.bio}`
-            li
-              a(href=`/users/${user.id}/reviews`) Reviews
-            if user.id === currentUser
-              a(href=`/users/${user.id}/edit`)
-                button(class='edit') Edit Profile
-            .catsContainerNew
-              table
-                  thead
-                    h2=`${user.username}'s Cats`
-                    tr
-                      th Name
-                      th Picture
-                      th My Rating
-                      th My Review
-                  tbody
-                    each cat in user.Cats
-                      tr
-                        td
-                          a(href=`/cats/${cat.id}`)= cat.name
-                        td
-                          a(href=`/cats/${cat.id}`)
-                            img(src=cat.imgUrl, alt="")
-                        each review in user.Reviews
-                          if review.catId === cat.id
-                            td
-                                p= review.rating
-                            td
-                                p= review.content
+    .profile
+      h1= thisUser.username
+      ul
+        li= `Name: ${thisUser.firstName} ${thisUser.lastName}`
+        li= `Bio: ${thisUser.bio}`
+        li
+          a(href=`/users/${thisUser.id}/reviews`) View Reviews
+      if thisUser.id === user.id
+        a(href=`/users/${thisUser.id}/edit`)
+          button(class='edit') Edit Profile
+      h2=`${user.username}'s Cats`
+      .catsContainer
+        table
+            thead
+              tr
+                th Name
+                th Picture
+                th My Rating
+                th My Review
+            tbody
+              each cat in thisUser.Cats
+                tr
+                  td
+                    a(href=`/cats/${cat.id}`)= cat.name
+                  td
+                    a(href=`/cats/${cat.id}`)
+                      img(src=cat.imgUrl, alt="")
+                  each review in thisUser.Reviews
+                    if review.catId === cat.id
+                      td
+                          p= review.rating
+                      td
+                          p= review.content
     script(src="/javascripts/userReviews.js" type="module")

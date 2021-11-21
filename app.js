@@ -38,7 +38,8 @@ app.use(
     store,
     saveUninitialized: false,
     resave: false,
-    maxAge: 300
+    maxAge: 300,
+    secure: true
   })
 );
 

@@ -9,7 +9,7 @@ const loginUser = (req, res, user) => {
 };
 
 const restoreUser = async (req, res, next) => {
-  console.log(req.session.auth)
+  // console.log(req.session.auth)
   if (req.session.auth) {
     const { userId } = req.session.auth;
     try {
@@ -48,7 +48,6 @@ const checkPermissions = (resource, currentUser) => {
     err.status = 403;
     throw err
   }
-
 }
 
 

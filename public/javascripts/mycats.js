@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
         del.addEventListener('click', async (e) => {
             e.preventDefault()
             const catId = e.target.id
-            console.log(catId)
+            // console.log(catId)
             const res = await fetch(`/cats/${catId}`, {
                 method: 'DELETE'
             })
