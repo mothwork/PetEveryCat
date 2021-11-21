@@ -3,6 +3,7 @@ include utils.pug
 
 block content 
   +validationErrorSummary(errors)
+  br
   ul
     li Name: #{review.Cat.name}
     li
@@ -22,3 +23,5 @@ block content
           option(value=value)= value
     +field("Review:", "content", review.content, "textarea")
     button Submit
+    a(href=`/users/${review.userId}/reviews`)
+      button(style="display:inline" type="button") Cancel

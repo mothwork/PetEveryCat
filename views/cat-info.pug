@@ -46,6 +46,6 @@ block content
                     if review.User.id === userId
                         a(href=`/cats/${cat.id}/reviews/new`)
                             button Edit Review
-        if (reviews.reduce((accum, review) => {if (review.User.id = userId) {return false;} else {return accum;}}, true))
+        if (reviews.reduce((accum, review) => {if (review.User.id === userId) {return false;} else {return accum;}}, true))
             a(href=`/cats/${cat.id}/reviews/new`)
                 button Add Review
