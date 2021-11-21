@@ -24,9 +24,9 @@ router.post('/demouser', asyncHandler(async(req, res) => {
 
 router.get('/:id(\\d+)', requireAuth, csrfProtection, asyncHandler(async(req, res) => {
   const userId = req.params.id;
-  const currentUser = res.locals.user.id
-  const user = await User.findByPk(userId, {include: [Cat, Review]});
-  res.render('user', {title: 'User Page', user, csrfToken: req.csrfToken(), currentUser});
+  const user = await User.findByPk(res.locals.user.id)
+  const thisUser = await User.findByPk(userId, {include: [Cat, Review]});
+  res.render('user', {title: 'User Page', thisUser, csrfToken: req.csrfToken(), user});
 }));
 
 router.get('/:id(\\d+)/edit', requireAuth, csrfProtection, asyncHandler(async(req, res) => {
@@ -57,7 +57,7 @@ const editUserValidators = [
 
 
 router.post('/:id(\\d+)/edit', requireAuth, editUserValidators, csrfProtection, asyncHandler(async(req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   const { firstName, lastName, bio } = req.body
   const userId = parseInt(req.params.id, 10);
   if (userId === res.locals.user.id) {
@@ -106,12 +106,12 @@ const signupValidators = [
         }
       });
     }),
-    check('password')
+  check('password')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a value for Password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'g')
     .withMessage('Password must contain at least 1 lowercase letter, uppercase letter, number, and special character (i.e. "!@#$%^&*")'),
-    check('confirmPassword')
+  check('confirmPassword')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a value for Confirm Password')
     .custom((value, { req }) => {
@@ -121,7 +121,7 @@ const signupValidators = [
         return true;
       };
     }),
-    check('bio')
+  check('bio')
     .exists({ checkFalsy: true })
     .withMessage('You MUST provide a bio')
   ];
@@ -129,7 +129,7 @@ const signupValidators = [
 router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (req, res) => {
   const { firstName, lastName, username, password, bio } = req.body;
   
-  const user = await User.build({
+  const user = User.build({
     firstName, lastName, username, bio
   });
   
@@ -142,16 +142,14 @@ router.post('/sign-up', signupValidators, csrfProtection, asyncHandler(async (re
     await CatList.create({userId: user.id, name: "Pet", canDelete: false});
     await CatList.create({userId: user.id, name: "Want to Pet", canDelete: false});
     await CatList.create({userId: user.id, name: "Currently Petting", canDelete: false});
-    // TO DO: log in user
     return loginUser(req, res, user);
-    // return res.redirect(`/users/${user.id}`);
   }
   const errors = validatorErrors.array().map(e => e.msg);
   res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken(), errors });
 }))
   
 router.get('/log-in', csrfProtection, (req, res) => {
-  res.render('log-in', { Title: 'Log In', csrfToken: req.csrfToken() })
+  res.render('log-in', { title: 'Log In', csrfToken: req.csrfToken() })
 })
 
 const loginValidators = [
@@ -178,11 +176,7 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
       const isPassword = await bcrypt.compare(password, user.hashedPassword.toString())
 
       if (isPassword) {
-        //TODO Log user in
-
         return loginUser(req, res, user);
-
-        //return res.redirect(`/${user.id}/cats`)
       }
     }
     errors.push('Invalid username or password')
@@ -197,17 +191,15 @@ router.post('/log-in', csrfProtection, loginValidators, asyncHandler(async (req,
 
 router.post('/log-out', (req, res) => {
   logOutUser(req, res)
-
-  //res.redirect('/')
 })
 
 
 router.get('/:id(\\d+)/cats', requireAuth, asyncHandler(async (req, res) => {
   const userId = res.locals.user.id
-  console.log(res.locals.user.id, "LOCALS")
+  // console.log(res.locals.user.id, "LOCALS")
 
   if (parseInt(req.params.id, 10) !== userId) {
-    console.log(userId)
+    // console.log(userId)
     return res.redirect(`/`)
   }
   const cats = await Cat.findAll({where: {userId}})
