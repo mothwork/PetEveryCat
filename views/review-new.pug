@@ -11,7 +11,7 @@ block content
       li Coat: #{cat.coat}
       li Size: #{cat.size}
       li Friendly: #{cat.friendly}
-    form(method="post" action=`/cats/${catId}/reviews/new`)
+    form(method="post" action=`/cats/${cat.id}/reviews/new`)
       input(type="hidden" name="_csrf" value=csrfToken)
       label(for="rating") Rating: 
       select(name="rating")
@@ -21,4 +21,6 @@ block content
           else 
             option(value=value)= value
       +field("Review:", "content", review.content, "textarea")
-      button Submit
+      button(type="submit" style="display:inline-block") Submit
+      a(href=`/cats/${cat.id}` style="display:inline-block;margin-left:3px")
+        button(type="button") Cancel

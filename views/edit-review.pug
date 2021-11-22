@@ -21,5 +21,6 @@ block content
           else 
             option(value=value)= value
       +field("Review:", "content", review.content, "textarea")
-      button Submit
-
+      button(style="display:inline") Submit
+      a(href=`/users/${userId}/reviews` style="display:inline-block;margin-left:3px")
+        button(type="button") Cancel
