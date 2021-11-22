@@ -176,7 +176,7 @@ router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(a
     const cat = await Cat.findByPk(catId);
     if (!review) {
         const review = await Review.build();
-        res.render('review-new', { title: "Create New Review", review, cat, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", userId, review, cat, csrfToken: req.csrfToken() });
     } else {
         res.redirect(`/reviews/${review.id}/edit`);
     }
@@ -213,7 +213,7 @@ router.post('/:id(\\d+)/reviews/new', requireAuth, reviewValidators, csrfProtect
     } else {
         const review = await Review.findOne({ where: { userId, catId } });
         const errors = validatorErrors.array().map(err => err.msg);
-        res.render('review-new', { title: "Create New Review", review: { rating, content }, cat, errors, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", review: { rating, content }, userId, cat, errors, csrfToken: req.csrfToken() });
     }
 }));
 
