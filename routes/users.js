@@ -79,7 +79,7 @@ router.post('/:id(\\d+)/edit', requireAuth, editUserValidators, csrfProtection, 
 
 router.get('/sign-up', csrfProtection, asyncHandler(async (req, res) => {
   const user = await User.build() // Does this need an await?
-  res.render('sign-up', { Title: 'Sign Up', user, csrfToken: req.csrfToken() })
+  res.render('sign-up', { title: 'Sign Up', user, csrfToken: req.csrfToken() })
 }));
 
 const signupValidators = [
@@ -203,7 +203,7 @@ router.get('/:id(\\d+)/cats', requireAuth, asyncHandler(async (req, res) => {
     return res.redirect(`/`)
   }
   const cats = await Cat.findAll({where: {userId}})
-  res.render('my-cats', {Title: 'My Cats', cats})
+  res.render('my-cats', {title: 'My Cats', cats})
 }))
 
 
