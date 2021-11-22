@@ -2,8 +2,9 @@ extends layout.pug
 include utils.pug
 
 block content
+    h1(class="sign-up") Sign up for a Pet Every Cat account!
     +validationErrorSummary(errors)
-    form(method="post" action="/users/sign-up")
+    form(method="post" action="/users/sign-up" class="sign-up")
         input(type="hidden" name="_csrf" value=csrfToken)
         +field("Username", "username", user.username)
         +field("Password", "password", user.password, "password")
@@ -12,5 +13,5 @@ block content
         +field("Last Name", "lastName", user.lastName)
         +field("Bio", "bio", user.bio, "textarea", "Tell us something about yourself")
         button Create New Account
-    div
-        a(href="/users/log-in") Returning User?
+    div.log-in-link
+        a(href="/users/log-in") Returning User? Log in here

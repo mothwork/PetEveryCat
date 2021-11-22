@@ -477,3 +477,45 @@ textarea {
     box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
 }
 
+.log-in-link:hover,
+.sign-up-link:hover {
+    color: #BAFFCE;
+    cursor: pointer;
+}
+
+.log-in-link,
+.sign-up-link {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.sign-up, .log-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+}
+
+.sign-up .form-group label {
+    margin-left: 3px;
+}
+
+.sign-up .form-group,
+.log-in .form-group {
+    margin-bottom: 5px;
+    display: flex;
+    height: 30px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.sign-up .form-group:nth-child(7) {
+    height: 75px;
+    margin-bottom: 20px;
+}
+
+h1.sign-up, h1.log-in {
+    font-size: 20px;
+    margin: 15px auto;
+}
