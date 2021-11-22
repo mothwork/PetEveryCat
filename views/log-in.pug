@@ -1,10 +1,11 @@
-extends layout.pug 
+extends layout.pug
 
 include utils.pug
 
 block content
   h1(class="log-in") Log into your Pet Every Cat account!
   +validationErrorSummary(errors)
+
   form(action="/users/log-in" method="post" class="log-in")
     input(type="hidden", name="_csrf" value=csrfToken)
     +field("Username", "username", username)

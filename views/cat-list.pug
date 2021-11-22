@@ -15,15 +15,23 @@ block content
             td
               a(href=`/cats/${cat.id}`)= cat.name
             td
-              img(src=cat.imgUrl, alt="")
+              a(href=`/cats/${cat.id}`)
+                img(src=cat.imgUrl, alt="")
               //- img(src= cat.imgUrl)
             if cat.Reviews.length
-              td= (cat.Reviews.reduce((accum, currentReview) => accum + parseInt(currentReview.rating), 0) / cat.Reviews.length)
-              
+              td(style="text-align:center")= (cat.Reviews.reduce((accum, currentReview) => accum + parseInt(currentReview.rating), 0) / cat.Reviews.length)
+            else
+              td
+                p N/A
             each review in cat.Reviews
               if review.userId === userId
                 td
                   p= review.rating
-
+              if review.userId === userId
                 td
                   p= review.content
+            if (cat.Reviews.filter(review => review.userId === userId).length === 0)
+              td
+                p N/A
+              td
+                p N/A

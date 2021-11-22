@@ -48,7 +48,7 @@ router.get('/:catId(\\d+)', requireAuth, csrfProtection, restoreUser, asyncHandl
 
     const freeUserLists = userLists.filter(list => (!catsInListsIds.includes(list.id)));
 
-    res.render('cat-info', {title: cat.name, csrfToken: req.csrfToken(), cat, freeUserLists, defaultLists, reviews, currentDefaultList});
+    res.render('cat-info', {title: cat.name, csrfToken: req.csrfToken(), cat, freeUserLists, defaultLists, reviews, userId, currentDefaultList});
 }));
 
 router.post(`/:id(\\d+)/addToCatList`, csrfProtection, requireAuth, asyncHandler(async (req, res) => {
@@ -176,7 +176,7 @@ router.get('/:id(\\d+)/reviews/new', requireAuth, csrfProtection, asyncHandler(a
     const cat = await Cat.findByPk(catId);
     if (!review) {
         const review = await Review.build();
-        res.render('review-new', { title: "Create New Review", review, cat, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", userId, review, cat, csrfToken: req.csrfToken() });
     } else {
         res.redirect(`/reviews/${review.id}/edit`);
     }
@@ -186,6 +186,8 @@ const reviewValidators = [
     check("rating")
         .exists({ checkFalsy: true })
         .withMessage("Please provide a rating")
+        .matches(/^[0-9]+$/)
+        .withMessage('Rating must be a number!')
         .custom(value => {
             if (value > 5 || value < 1) {
                 throw new Error("Rating must be between 1 and 5")
@@ -199,14 +201,19 @@ const reviewValidators = [
 
 router.post('/:id(\\d+)/reviews/new', requireAuth, reviewValidators, csrfProtection, asyncHandler(async (req, res) => {
     const validatorErrors = validationResult(req);
+    const userId = req.session.auth.userId;
+    const catId = req.params.id;
     const { rating, content } = req.body;
+    const cat = await Cat.findByPk(catId);
 
+    
     if (validatorErrors.isEmpty()) {
-        const review = await Review.create({ rating, content, catId: req.params.id, userId: req.session.auth.userId });
+        const review = await Review.create({ rating, content, catId, userId });
         res.redirect(`/cats/${req.params.id}`);
     } else {
+        const review = await Review.findOne({ where: { userId, catId } });
         const errors = validatorErrors.array().map(err => err.msg);
-        res.render('review-new', { title: "Create New Review", review: { rating, content }, errors, csrfToken: req.csrfToken() });
+        res.render('review-new', { title: "Create New Review", review: { rating, content }, userId, cat, errors, csrfToken: req.csrfToken() });
     }
 }));
 

@@ -4,6 +4,7 @@ include utils.pug
 block content
     h1(class="sign-up") Sign up for a Pet Every Cat account!
     +validationErrorSummary(errors)
+
     form(method="post" action="/users/sign-up" class="sign-up")
         input(type="hidden" name="_csrf" value=csrfToken)
         +field("Username", "username", user.username)

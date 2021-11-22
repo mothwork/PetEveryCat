@@ -519,3 +519,17 @@ h1.sign-up, h1.log-in {
     font-size: 20px;
     margin: 15px auto;
 }
+
+.review-form a:hover {
+    color: #BAFFCE
+}
+
+.error-class > p{
+    font-size: larger;
+    font-weight: bolder;
+}
+.error {
+    color: rgb(138, 0, 0);
+    font-weight: bold;
+
+}
