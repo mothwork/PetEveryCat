@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async e => {
         <label for="name">Name</label>
         <input name="name" type="text" id="create-input">
         <button id="create">Submit</button>
-        <input type="button" value="Cancel" id="cancel-create">
+        <button type="button" value="Cancel" id="cancel-create">Cancel</button>
         `
         formContainer.appendChild(form);
         const input = document.getElementById('create-input');
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async e => {
                 <label for="name">Name</label>
                 <input name="name" type="text" value="${text}" id="edit-input">
                 <button id="edit">Submit</button>
-                <input type="button" value="Cancel" id="cancel">
+                <button type="button" value="Cancel" id="cancel">Cancel</button>
             `
             catListToEdit.innerHTML = ''
             catListToEdit.appendChild(editForm);
